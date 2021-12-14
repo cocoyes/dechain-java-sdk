@@ -1,8 +1,10 @@
 package com.dechain.face;
 
+import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.BaseMsg;
+import com.dechain.msg.coin.CompanyInfo;
 import com.dechain.msg.coin.RegisterTokenDto;
 import com.dechain.msg.coin.TokenInfo;
 import com.dechain.msg.red.RedPackInfo;
@@ -234,9 +236,9 @@ public class CoinFace {
     }
 
 
-    public static String submitRegister(String contract,String priKey,String tokenAddr,String symbol,String tokenName,String icon,Integer len,BigInteger value){
+    public static String submitRegister(String contract,String priKey,String tokenAddr,String symbol,String tokenName,String icon,Integer len,BigInteger value,int ctype){
         System.out.println("submitRegister");
-        List<Type> params= Arrays.asList(new Address(tokenAddr),new Utf8String(symbol),new Utf8String(icon),new Utf8String(tokenName),new Uint(BigInteger.valueOf(len)));
+        List<Type> params= Arrays.asList(new Address(tokenAddr),new Utf8String(symbol),new Utf8String(icon),new Utf8String(tokenName),new Uint(BigInteger.valueOf(len)),new Uint(BigInteger.valueOf(ctype)));
         return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"createToken",RedPackFace.GAS_LIMIT.toBigInteger(),RedPackFace.GAS_PRICE.toBigInteger(),value);
     }
     public static String submitRegisterRed(String contract,String priKey,String tokenAddr,String redContract,BigInteger value){
@@ -258,7 +260,7 @@ public class CoinFace {
      * //余额必须超过注册所需费用+手续费0.1
      * 注册默认18位
      */
-    public static RegisterTokenDto registerToken(String centerContract,String pri,String amount,String symbol,String tokeName,String icon){
+    public static RegisterTokenDto registerToken(String centerContract,String pri,String amount,String symbol,String tokeName,String icon,int ctype){
         Credentials credentials=Credentials.create(pri);
         RegisterTokenDto registerTokenDto=new RegisterTokenDto();
         try {
@@ -272,7 +274,7 @@ public class CoinFace {
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
-                    return submitRegister(centerContract,pri,token.getContractAddress(),symbol,tokeName,icon,18,registerFee);
+                    return submitRegister(centerContract,pri,token.getContractAddress(),symbol,tokeName,icon,18,registerFee,ctype);
                 });
                 CompletableFuture<Boolean> future2 = futureSubmit.thenApply((p)->{
                     if (StringUtils.isEmpty(p)){
@@ -483,9 +485,36 @@ public class CoinFace {
     }
 
 
+    /**
+     * 获取企业基本信息
+     * @param tokenContract
+     * @return
+     */
+    public static CompanyInfo getCompanyInfo(String tokenContract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Utf8String>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",tokenContract,"companyInfo",list,outputParams);
+        if (types!=null&&types.size()==1){
+            Utf8String ows= (Utf8String)types.get(0);
+            String str=ows.getValue();
+            CompanyInfo companyInfo=JSON.parseObject(str,CompanyInfo.class);
+            return companyInfo;
+        }
+        return new CompanyInfo();
+    }
 
-
-
+    /**
+     * 更新企业信息
+     * @param contract
+     * @param priKey
+     * @param json
+     * @return
+     */
+    public static BaseMsg updateCompanyInfo(String contract, String priKey, String json){
+        List<Type> params= Arrays.asList(new Utf8String(json));
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"updateCompanyInfo",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+    }
 
 
 
@@ -497,7 +526,7 @@ public class CoinFace {
         Integer len=18;
         String symbol="COO";
         String tokenName="DDT";
-        System.out.println(CoinFace.registerToken("0xb6bfa759f6e42d1074ed88d890eb4cae6f63431d",pri,new BigDecimal(amount).toPlainString(),symbol,tokenName,""));
+        System.out.println(CoinFace.registerToken("0xb6bfa759f6e42d1074ed88d890eb4cae6f63431d",pri,new BigDecimal(amount).toPlainString(),symbol,tokenName,"",1));
     }
 
 }
