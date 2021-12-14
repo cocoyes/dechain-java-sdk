@@ -1,0 +1,6 @@
+.name
+*.class
+target/
+.idea
+*.json
+*.properties
