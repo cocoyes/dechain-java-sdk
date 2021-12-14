@@ -1,6 +1,31 @@
-.name
 *.class
-target/
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+
+# 忽略所有生成的.iml文件
+*.iml
+
+# 忽略idea文件夹
 .idea
-*.json
-*.properties
+
+# 忽略target文件夹
+target
+
+# 忽略class文件夹
+classes
+
+
+#忽略log日志
+*.log.*
+*.log
+
+positiondata
+*.data
+*.index
