@@ -29,11 +29,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.dechain.msg.coin.BaseMsg.GAS_LIMIT;
+import static com.dechain.msg.coin.BaseMsg.GAS_PRICE;
+
 public class RedPackFace {
-    //如果红包数为100个，实际需要花费大于255万gas,抢红包只需要小于15万即可，按实际消耗决定
-    //以下单次最多花费手续费0.00000001
-    public static final BigDecimal GAS_LIMIT=new BigDecimal(5000000);
-    public static final BigDecimal GAS_PRICE=new BigDecimal(2000);
+
 
     /**
      * 获取每次操作至少需要的手续费

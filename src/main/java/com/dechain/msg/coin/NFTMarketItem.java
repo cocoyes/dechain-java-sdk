@@ -6,6 +6,15 @@ public class NFTMarketItem {
     private String content; //图集描述
     private String contract; //NFT合约
     private String creator; //发行人
+    private Boolean used; //是否有效
+
+    public Boolean getUsed() {
+        return used;
+    }
+
+    public void setUsed(Boolean used) {
+        this.used = used;
+    }
 
     public String getImg() {
         return img;

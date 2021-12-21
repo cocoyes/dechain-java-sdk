@@ -166,16 +166,17 @@ public class AccountFace {
 
 
     public static void main(String[] args) {
+        //System.out.println(AccountFace.importByMnemonic("shy smile throw crawl broken wage like blouse easily office under final long ignore width envelope mosquito mention face slam armor garbage grief laundry"));
         //String a=IbanUtil.calculateCheckDigit("XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS");
         //System.out.println(a);
-        String addr="de1kwh0z7kmcyx7kkq53anjs8k2dj46fgc33uc9gt";
-        System.out.println(AccountFace.addressToHex(addr));
+       // String addr="de1kwh0z7kmcyx7kkq53anjs8k2dj46fgc33uc9gt";
+       // System.out.println(AccountFace.addressToHex(addr));
         /*EnvInstance.setEnv(new EnvBase("192.168.6.42"));
         System.out.println(AccountFace.createAccount());
         System.out.println(AccountFace.getMainCoinBalance("de1u5rrg73d4hflx6psfp06pyadzy669dykg0lprl"));
         System.out.println(AccountFace.getContractCoinBalance("de1u5rrg73d4hflx6psfp06pyadzy669dykg0lprl","0xfd6656fc53f1d389e23877c59f357e65bd3d6f91",18));
-*/
-        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+*/  EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+
 
     /*    Long c1=System.currentTimeMillis();
 

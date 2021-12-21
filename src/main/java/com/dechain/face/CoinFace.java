@@ -3,15 +3,9 @@ package com.dechain.face;
 import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
-import com.dechain.msg.coin.BaseMsg;
-import com.dechain.msg.coin.CompanyInfo;
-import com.dechain.msg.coin.RegisterTokenDto;
-import com.dechain.msg.coin.TokenInfo;
+import com.dechain.msg.coin.*;
 import com.dechain.msg.red.RedPackInfo;
-import com.dechain.utils.ContractUtil;
-import com.dechain.utils.PayCenter_sol_PayCenter;
-import com.dechain.utils.Redpack_sol_Redpack;
-import com.dechain.utils.StandContract_sol_PubToken;
+import com.dechain.utils.*;
 import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.TypeReference;
@@ -174,6 +168,46 @@ public class CoinFace {
         }
         return BigInteger.valueOf(18);
     }
+
+    /**
+     * 获取注册基本信息
+     * @param contract
+     * @return
+     */
+    public static RegisterBaseInfo getBaseInfo(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getBaseInfo",list,outputParams);
+        if (types!=null&&types.size()==6){
+            /**
+             * 0: uint256: amount 50000000000000000000
+             */
+
+            Uint256 registerTokenFee= (Uint256)types.get(0);
+            Uint256 registerRedFee= (Uint256)types.get(1);
+            Uint256 registerPayFee= (Uint256)types.get(2);
+            Uint256 openContractCount= (Uint256)types.get(3);
+            Uint256 openRedCount= (Uint256)types.get(4);
+            Uint256 openPayCount= (Uint256)types.get(5);
+            RegisterBaseInfo registerBaseInfo=new RegisterBaseInfo();
+            registerBaseInfo.setRegisterTokenFee(registerTokenFee.getValue());
+            registerBaseInfo.setRegisterRedFee(registerRedFee.getValue());
+            registerBaseInfo.setRegisterPayFee(registerPayFee.getValue());
+            registerBaseInfo.setOpenContractCount(openContractCount.getValue());
+            registerBaseInfo.setOpenRedCount(openRedCount.getValue());
+            registerBaseInfo.setOpenPayCount(openPayCount.getValue());
+            return registerBaseInfo;
+        }
+        return null;
+    }
+
+
     /**
      * 通证注册费
      * @param contract
@@ -214,6 +248,29 @@ public class CoinFace {
         }
         return BigInteger.valueOf(18);
     }
+
+    /**
+     * NFT开通费
+     * @param contract
+     * @return
+     */
+    public static BigInteger getRegisterNFTFee(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Uint256>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"nftPublishFee",list,outputParams);
+        if (types!=null&&types.size()==1){
+            /**
+             * 0: uint256: amount 50000000000000000000
+             */
+
+            Uint256 amount= (Uint256)types.get(0);
+            return amount.getValue();
+        }
+        return BigInteger.valueOf(18);
+    }
+
+
     /**
      * 支付开通费
      * @param contract
@@ -239,18 +296,25 @@ public class CoinFace {
     public static String submitRegister(String contract,String priKey,String tokenAddr,String symbol,String tokenName,String icon,Integer len,BigInteger value,int ctype){
         System.out.println("submitRegister");
         List<Type> params= Arrays.asList(new Address(tokenAddr),new Utf8String(symbol),new Utf8String(icon),new Utf8String(tokenName),new Uint(BigInteger.valueOf(len)),new Uint(BigInteger.valueOf(ctype)));
-        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"createToken",RedPackFace.GAS_LIMIT.toBigInteger(),RedPackFace.GAS_PRICE.toBigInteger(),value);
+        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"createToken",BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger(),value);
     }
     public static String submitRegisterRed(String contract,String priKey,String tokenAddr,String redContract,BigInteger value){
         System.out.println("submitRegister token");
         List<Type> params= Arrays.asList(new Address(redContract),new Address(tokenAddr));
-        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"mapperRedContract",RedPackFace.GAS_LIMIT.toBigInteger(),RedPackFace.GAS_PRICE.toBigInteger(),value);
+        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"mapperRedContract",BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger(),value);
+    }
+
+    public static String submitRegisterNFT(String contract,String priKey,String nftContract,String tokenName,String pic,String content,BigInteger value){
+        System.out.println("submitRegister NFT");
+        //address _contractAddr,string memory _img,string memory _title,string memory _content
+        List<Type> params= Arrays.asList(new Address(nftContract),new Utf8String(pic),new Utf8String(tokenName),new Utf8String(content));
+        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"createNFT",BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger(),value);
     }
 
     public static String submitRegisterPay(String contract,String priKey,String tokenAddr,String payContract,BigInteger value){
         System.out.println("submitRegister token");
         List<Type> params= Arrays.asList(new Address(payContract),new Address(tokenAddr));
-        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"mapperPayContract",RedPackFace.GAS_LIMIT.toBigInteger(),RedPackFace.GAS_PRICE.toBigInteger(),value);
+        return TransactionFace.callContractFunctionOpValue(priKey,contract,params,"mapperPayContract",BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger(),value);
     }
 
 
@@ -518,6 +582,60 @@ public class CoinFace {
 
 
 
+    /**
+     * 发行NFT合约
+     */
+    public static RegisterTokenDto openNFT(String centerContract,String pri,String tokenName,String symbol,String pic,String content){
+        Credentials credentials=Credentials.create(pri);
+        RegisterTokenDto registerTokenDto=new RegisterTokenDto();
+        try {
+            BigDecimal balance=AccountFace.getMainCoinBalance(credentials.getAddress());
+            BigInteger registerFee=CoinFace.getRegisterNFTFee(centerContract);
+            BigDecimal needFee=new BigDecimal(registerFee).divide((BigDecimal.TEN.pow(18)),8,BigDecimal.ROUND_DOWN).add(new BigDecimal(0.1));
+            if (needFee.compareTo(balance)>0){
+                return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
+            }
+            NFT_sol_NFT token= ContractUtil.createContractNFT(pri,tokenName,symbol,pic,content);
+            if (token!=null&& StringUtils.isNotEmpty(token.getContractAddress())){
+
+                CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
+                    return submitRegisterNFT(centerContract,pri,token.getContractAddress(),tokenName,pic,content,registerFee);
+                });
+                CompletableFuture<Boolean> future2 = futureSubmit.thenApply((p)->{
+                    int tryCount=0;
+                    boolean status=false;
+                    while (tryCount<10&&!status){
+                        tryCount++;
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("try count "+ tryCount);
+                        status=TransactionFace.getTransactionStatus(p);
+                    }
+                    return status;
+                });
+                if (future2.join()){
+                    registerTokenDto.setMsg("success");
+                    registerTokenDto.setSuccess(true);
+                    registerTokenDto.setContract(token.getContractAddress());
+                }else {
+                    registerTokenDto.setSuccess(false);
+                    registerTokenDto.setContract(token.getContractAddress());
+                    registerTokenDto.setMsg("创建失败");
+                }
+                return registerTokenDto;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return RegisterTokenDto.buildError("执行错误");
+        }
+        registerTokenDto.setSuccess(false);
+        registerTokenDto.setContract("");
+        registerTokenDto.setMsg("创建失败");
+        return registerTokenDto;
+    }
 
     public static void main(String[] args) {
         EnvInstance.setEnv(new EnvBase("123.100.236.38"));
