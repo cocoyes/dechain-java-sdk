@@ -3,6 +3,7 @@ package com.dechain.face;
 import com.alibaba.fastjson.JSON;
 import com.dechain.msg.coin.*;
 import com.dechain.utils.ContractUtil;
+import com.dechain.utils.HexUtil;
 import com.dechain.utils.Redpack_sol_Redpack;
 import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
@@ -135,25 +136,92 @@ public class NFTFace {
 
 
     /**
+     * 获取某地址在某NFT合约下持有的NFT数量
+     * @param nftContract
+     * @param ownAddress
+     * @return
+     */
+    public static int getNFTBalanceOf(String nftContract,String ownAddress){
+        ownAddress=HexUtil.toHexAddr(ownAddress);
+        List<Type> params= Arrays.asList(new Address(ownAddress));
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Uint>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",nftContract,"balanceOf",params,outputParams);
+        if (types!=null&&types.size()==1){
+            Uint count= (Uint)types.get(0);
+            return count.getValue().intValue();
+        }
+        return 0;
+    }
+
+
+    /**
      * 铸造NFT
      */
-    public static String mintNFT(String contract,String priKey,String toAddr,String title,String content,BigInteger price,String url ){
+    public static BaseMsg mintNFT(String contract,String priKey,String toAddr,String title,String content,BigInteger price,String url ){
+        toAddr=HexUtil.toHexAddr(toAddr);
         List<Type> params= Arrays.asList(new Utf8String(url),new Address(toAddr),new Uint(price),new Utf8String(title),new Utf8String(content));
-        return TransactionFace.callContractFunctionOp(priKey,contract,params,"mint", BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger());
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"mint", BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger()));
     }
 
     /**
      * 转移NFT
      * address from, address to, uint256 tokenId
      */
-    public static String transferFrom(String contract,String priKey,String toAddr,BigInteger tokenId ){
+    public static BaseMsg transferFrom(String contract,String priKey,String toAddr,BigInteger tokenId ){
         String address = Crypto.generateAddressFromPriv(priKey);
-        List<Type> params= Arrays.asList(new Address(address),new Address(toAddr),new Uint(tokenId));
-        return TransactionFace.callContractFunctionOp(priKey,contract,params,"transferFrom", BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger());
+        String hex=HexUtil.toHexAddr(address);
+        List<Type> params= Arrays.asList(new Address(hex),new Address(toAddr),new Uint(tokenId));
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"transferFrom", BaseMsg.GAS_LIMIT.toBigInteger(),BaseMsg.GAS_PRICE.toBigInteger()));
     }
 
 
 
+
+    /**
+     * 若要获取某用户在某个NFT图集下拥有的NFT单元，步骤较为繁琐，应当以切换模式或者流加载方式去展示给用户
+     * 第一步：获取它在该NFT合约下拥有的NFT单元总数
+     * 第二步：根据从【0~单元总数-1】索引读取到对应的tokenId
+     * 第三步：根据tokenId获取该NFT单元的详情
+     *
+     * 对于用户层面： 列表层可展示拥有的图集与持有个数
+     *              详情内再去挨个读取tokenId
+     *              凭借tokenId 去获取详情
+     *
+     * step 1
+     */
+    public static List<MyNFTList> getAllNFTListByAddress(String registerContract,String address){
+        List<MyNFTList> list=new ArrayList<>();
+        List<NFTMarketItem>  parentList=getNFTMarketSimpleItem(registerContract);
+        for(NFTMarketItem item:parentList){
+            int count=getNFTBalanceOf(item.getContract(),address);
+            if(count>0){
+                MyNFTList myNFTList=new MyNFTList();
+                myNFTList.setParent(item);
+                myNFTList.setCount(count);
+                list.add(myNFTList);
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * 根据索引获取对应的NFT单元详情
+     * step 2 step 3
+     */
+    public static NFTMarketItemDetail getNFTDetail(String nftContract,String address,int index){
+        List<Type> params= Arrays.asList(new Address(address),new Uint256(index));
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Uint>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",nftContract,"tokenOfOwnerByIndex",params,outputParams);
+        if (types!=null&&types.size()==1){
+            Uint count= (Uint)types.get(0);
+            return getNFTDetail(nftContract,count.getValue().intValue());
+        }else {
+            return null;
+        }
+    }
 
 
 }

@@ -3,7 +3,6 @@ package com.dechain.face;
 import com.dechain.msg.coin.BaseMsg;
 import com.dechain.msg.coin.RegisterTokenDto;
 import com.dechain.utils.ContractUtil;
-import com.dechain.utils.StandContract_sol_PubToken;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.Credentials;
 

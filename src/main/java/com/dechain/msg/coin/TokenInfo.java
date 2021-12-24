@@ -22,6 +22,15 @@ public class TokenInfo {
     private boolean status; //状态
     private String red; //红包合约地址
     private String pay; //支付合约地址
+    private int ctype;
+
+    public int getCtype() {
+        return ctype;
+    }
+
+    public void setCtype(int ctype) {
+        this.ctype = ctype;
+    }
 
     public String getRed() {
         return red;

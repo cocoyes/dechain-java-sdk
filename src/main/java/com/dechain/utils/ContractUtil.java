@@ -21,12 +21,12 @@ public class ContractUtil {
      * @param tokenName
      * @return
      */
-    public static StandContract_sol_PubToken createContract(String priKey, BigInteger amount,Integer len,String symbol,String tokenName){
+    public static PubToken_sol_PubToken createContract(String priKey, BigInteger amount,Integer len,String symbol,String tokenName){
         Web3j web3j= EnvInstance.getEnv().getWeb3j();
         Credentials credentials=Credentials.create(priKey);
         try {
-            StandContract_sol_PubToken token=
-            StandContract_sol_PubToken.
+            PubToken_sol_PubToken token=
+                    PubToken_sol_PubToken.
                     deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
                             BaseMsg.GAS_LIMIT.toBigInteger(),amount,tokenName,BigInteger.valueOf(len),symbol).send();
 

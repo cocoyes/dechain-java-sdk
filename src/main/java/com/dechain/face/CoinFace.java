@@ -106,10 +106,10 @@ public class CoinFace {
         outputParams.add(new TypeReference<Bool>() {});
         outputParams.add(new TypeReference<Address>() {});
         outputParams.add(new TypeReference<Address>() {});
-
+        outputParams.add(new TypeReference<Uint256>() {});
         list.add(new Address(tokenAddress));
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getTokenInfo",list,outputParams);
-        if (types!=null&&types.size()==10){
+        if (types!=null&&types.size()==11){
             /**
              * 0: address: _owner 0x3901952De2f16ad9B8646CF59C337d0b445A81Ca
              * 1: address: token 0x528b6083c0575a758b7AbA4B9785FD2c2aaCe581
@@ -132,6 +132,7 @@ public class CoinFace {
             Bool bool=(Bool)types.get(7);
             Address red= (Address)types.get(8);
             Address pay= (Address)types.get(9);
+            Uint256 ctype= (Uint256)types.get(10);
             tokenInfo.setStatus(bool.getValue());
             tokenInfo.setOwner(owner.getValue());
             tokenInfo.setIcon(icon.getValue());
@@ -142,6 +143,7 @@ public class CoinFace {
             tokenInfo.setSort(sort.getValue().intValue());
             tokenInfo.setRed(red.getValue());
             tokenInfo.setPay(pay.getValue());
+            tokenInfo.setCtype(ctype.getValue().intValue());
             return tokenInfo;
         }
         return null;
@@ -334,7 +336,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            StandContract_sol_PubToken token=ContractUtil.createContract(pri,new BigInteger(amount).multiply((BigInteger.TEN.pow(18))),18,symbol,tokeName);
+            PubToken_sol_PubToken token=ContractUtil.createContract(pri,new BigInteger(amount).multiply((BigInteger.TEN.pow(18))),18,symbol,tokeName);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -577,7 +579,7 @@ public class CoinFace {
      */
     public static BaseMsg updateCompanyInfo(String contract, String priKey, String json){
         List<Type> params= Arrays.asList(new Utf8String(json));
-        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"updateCompanyInfo",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"updateCompanyInfo",GAS_LIMIT.toBigInteger().multiply(BigInteger.TEN.multiply(BigInteger.TEN)),GAS_PRICE.toBigInteger()));
     }
 
 

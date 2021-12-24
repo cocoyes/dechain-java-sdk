@@ -3,8 +3,8 @@ package com.dechain.msg.coin;
 public class NFTMarketItemDetail {
     private int tokenId;
     private String img; //图片
-    private String title; //图集标题
-    private String content; //图集描述
+    private String title; //
+    private String content; //
     private String contract; //NFT合约
     private String account; //拥有人
     private String price; //价格
