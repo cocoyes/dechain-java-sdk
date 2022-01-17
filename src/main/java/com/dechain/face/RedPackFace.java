@@ -1,31 +1,25 @@
 package com.dechain.face;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
+import com.dechain.msg.coin.BaseMsg;
+import com.dechain.msg.coin.TokenInfo;
 import com.dechain.msg.red.RedContractInfo;
 import com.dechain.msg.red.RedPackInfo;
-import org.web3j.abi.FunctionEncoder;
+import com.dechain.utils.RedpackSol;
+import com.dechain.utils.crypto.Crypto;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -211,60 +205,30 @@ public class RedPackFace {
 
 
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
-        System.out.println(RedPackFace.needFee().toPlainString());
-        if (!true){
-            test2();
-            return;
-        }
-        //
-        System.out.println("查询某个红包的详情:");
-        System.out.println(JSON.toJSONString(RedPackFace.getTokenInfo("0x0870349fa0e745e3d916a243105a43c56ba59bde")));
-       // System.out.println(JSON.toJSONString(getSendPackInfo("163660258133","0xb529ee2365e3821854be74a33e0ab8a67fc20403")));
+        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
+        Web3j web3j=EnvInstance.getEnv().getWeb3j();
+        String pri=Crypto.generatePrivateKeyFromMnemonic("dignity place clip make relief dice lumber win copper profit voice render");
+        List<TokenInfo> list=CoinFace.getAllToken("0xAc15653c39b351cAFf64eC691bA56Bf7CEE18Fe5");
+        String address=Crypto.generateAddressFromPriv(pri);
+        String hex=AccountFace.addressToHex(address);
+        list.forEach(tokenInfo -> {
+            if(tokenInfo.getSymbol().equalsIgnoreCase("BSS4")){
+                String n=CoinFace.getName(tokenInfo.getRed());
+                String s=CoinFace.getSymbol(tokenInfo.getRed());
 
-      //  RedPackFace.withdrawBalance("0xb529ee2365e3821854be74a33e0ab8a67fc20403","24729b3ca63396f9c0a849de7d6ae0ee86c37646c711378b4319b75452793c12","163660258133");
 
-        /**
-         * 模拟与合约交互
-         */
-        //代币合约
-        String coinContract="0x6ffd23b944a2075fcffe2de1d66067092269645e";
-        // 红包合约
-        String redContract="0x1d4ceeaee0d283c31a5b394ff46630ac7f378f04";
-
-        //含有代币的私钥
-        String pri="e7e7f1b09d27caaf3c0f621ec3f1d46610427c5b71f3b63feee6c6cd8ca6c8f0";
-        String myadd="0x489EAD38992b4d1127C9F697B8F315AD2011506e";
-        System.out.println("代币余额:"+AccountFace.getContractCoinBalance(myadd,coinContract,18));
-        // no1 向代币合约申请授权,授权1000个，这里假设代币是18位，其他位数直接改
-        BigInteger ba=RedPackFace.getApproveRemainBalance(redContract,myadd,coinContract);
-        System.out.println("ba="+ba);
-        RedPackFace.approve(coinContract,redContract,pri,BigInteger.valueOf(1000).multiply(BigInteger.TEN.pow(18)));
-        try {
-            System.out.println("休眠5秒，等待授权成功,授权是需要手续费的");
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String redPackId="100000019";
-        RedPackFace.createRedPack(redContract,pri,BigInteger.valueOf(1).multiply(BigInteger.TEN.pow(18)),5,redPackId);
-        try {
-            System.out.println("休眠5秒再查询，等待发布成功");
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(JSON.toJSONString(getSendPackInfo(redPackId,redContract)));
-
-        //自己去抢
-        RedPackFace.huntingRedPack(redContract,pri,redPackId);
-        try {
-            System.out.println("休眠5秒再查询，再看看红包详情");
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(JSON.toJSONString(getSendPackInfo(redPackId,redContract)));
+                String name=CoinFace.getName(tokenInfo.getRed());
+                BigDecimal ba=AccountFace.getContractCoinBalance(hex,tokenInfo.getToken(),18);
+                System.out.println("name="+name+",ba="+ba);
+                String approveHash=RedPackFace.approve(tokenInfo.getToken(),tokenInfo.getRed(),pri,new BigInteger("1000").multiply(BigInteger.TEN.pow(18)));
+                BaseMsg msgApprove=BaseFace.dealMsg(approveHash);
+                System.out.println(JSON.toJSONString(msgApprove));
+                System.out.println("授权完成");
+                String hash=RedPackFace.createRedPack(tokenInfo.getRed(),pri,new BigInteger("2000000000000000000"),2,"11555558");
+                BaseMsg msg=BaseFace.dealMsg(hash);
+                System.out.println(JSON.toJSONString(msg));
+            }
+        });
     }
 
 

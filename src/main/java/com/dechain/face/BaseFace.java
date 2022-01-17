@@ -14,6 +14,7 @@ public class BaseFace {
 
     public static BaseMsg dealMsg(String hash){
         BaseMsg baseMsg=new BaseMsg();
+        baseMsg.setHash(hash);
         try {
             CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
                 return hash;

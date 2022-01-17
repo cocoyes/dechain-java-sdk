@@ -163,6 +163,7 @@ public class TransactionFace {
         }
         String hexValue=contract20Sign(priKey,contract,amount,toAddress);
         Web3j web3j=EnvInstance.getEnv().getWeb3j();
+
         EthSendTransaction ethSendTransaction = null;
         try {
             ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
@@ -403,12 +404,12 @@ public class TransactionFace {
 
         //发送普通交易
         System.out.println("-----------------发送普通交易---------------------------");
-        TransactionFace.sendCommonTrans(priKey,"50.55",toAddr);
+       // TransactionFace.sendCommonTrans(priKey,"50.55",toAddr);
         //System.out.println("balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
         System.out.println("-----------------发送合约交易---------------------------");
         String contractAddress="0x6ffd23b944a2075fcffe2de1d66067092269645e";
         BigInteger am=new BigInteger("5000").multiply(BigInteger.TEN.pow(18));
-      // TransactionFace.sendContractTrans(priKey,contractAddress,am.toString(),toAddr);
+      TransactionFace.sendContractTrans(priKey,contractAddress,am.toString(),toAddr);
        /* Optional<TransactionReceipt> optional=null;
         try {
             optional= web3j.ethGetTransactionReceipt("0x18a10440be0dbd004bc5bb4444404ec6f7faccfa023f61a0d0add8c403fa470e").send().getTransactionReceipt();

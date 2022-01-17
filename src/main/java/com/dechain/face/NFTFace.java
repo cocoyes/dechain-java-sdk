@@ -1,23 +1,18 @@
 package com.dechain.face;
 
-import com.alibaba.fastjson.JSON;
+import com.dechain.env.EnvBase;
+import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.*;
-import com.dechain.utils.ContractUtil;
 import com.dechain.utils.HexUtil;
-import com.dechain.utils.Redpack_sol_Redpack;
 import com.dechain.utils.crypto.Crypto;
-import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.crypto.Credentials;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class NFTFace {
 
@@ -221,6 +216,12 @@ public class NFTFace {
         }else {
             return null;
         }
+    }
+
+
+    public static void main(String[] args) {
+        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+        System.out.println(transferFrom("0x731bbb4155b8cf9b96ddcdfd5aa3bb806cc8dbac","602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc","0x731bbb4155b8cf9b96ddcdfd5aa3bb806cc8dbac",BigInteger.TEN));
     }
 
 

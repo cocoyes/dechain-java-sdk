@@ -10,7 +10,11 @@ import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
@@ -140,23 +144,17 @@ public class AccountFace {
             address= AccountFace.addressToHex(address);
         }
         BigInteger balance = BigInteger.ZERO;
-        Function fn = new Function("balanceOf", Arrays.asList(new org.web3j.abi.datatypes.Address(address)), Collections.<TypeReference<?>>emptyList());
-        String data = FunctionEncoder.encode(fn);
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("to", contractAddress.toLowerCase());
-        map.put("data", data);
-        try {
-            String methodName = "eth_call";
-            Object[] params = new Object[]{map, "latest"};
-            String result = EnvInstance.getEnv().getJsonrpcClient().invoke(methodName, params, Object.class).toString();
-            if (StringUtils.isNotEmpty(result)) {
-                if ("0x".equalsIgnoreCase(result) || result.length() == 2) {
-                    result = "0x0";
-                }
-                balance = Numeric.decodeQuantity(result);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
+        List<Type> params= Arrays.asList(new Address(address));
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Uint256>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contractAddress,"balanceOf",params,outputParams);
+        if (types!=null&&types.size()==1){
+            /**
+             * 0: uint256: amount 50000000000000000000
+             */
+
+            Uint256 amount= (Uint256)types.get(0);
+            balance=amount.getValue();
         }
         return EthConvert.fromWei(new BigDecimal(balance), EthConvert.Unit.fromLen(len));
 
@@ -175,9 +173,10 @@ public class AccountFace {
         System.out.println(AccountFace.createAccount());
         System.out.println(AccountFace.getMainCoinBalance("de1u5rrg73d4hflx6psfp06pyadzy669dykg0lprl"));
         System.out.println(AccountFace.getContractCoinBalance("de1u5rrg73d4hflx6psfp06pyadzy669dykg0lprl","0xfd6656fc53f1d389e23877c59f357e65bd3d6f91",18));
-*/  EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+*/
 
-
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        //System.out.println(AccountFace.getContractCoinBalance("0xb3aef17adbc10deb58148f67281eca6caba4a311","0x6204865bff7ac09743aaf9e97a570a4bd3cffd92",18));
     /*    Long c1=System.currentTimeMillis();
 
         System.out.println(AccountFace.addressToHex("de1m46cdqk83f95qm877ekhqu62dn88c20vq8rfad"));
@@ -185,7 +184,7 @@ public class AccountFace {
         Long c2=System.currentTimeMillis();
         System.out.println(c2-c1);*/
        // System.out.println(AccountFace.getContractCoinBalance("0x2911670c2e5873fc17b7dc6e769d5c53ee1713aa","0x6ffd23b944a2075fcffe2de1d66067092269645e",18));
-
+        System.out.println(AccountFace.getMainCoinBalance("de1rp5spkc9evu4v35w9fqhc5qzrntmnrwn492aqy"));
         //System.out.println(AccountFace.importByMnemonic("off zoo one tiny educate latin input memory produce code jar gospel"));
     }
 

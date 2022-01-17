@@ -4,24 +4,23 @@ import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.*;
-import com.dechain.msg.red.RedPackInfo;
 import com.dechain.utils.*;
 import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static com.dechain.face.PayCenterFace.GAS_LIMIT;
 import static com.dechain.face.PayCenterFace.GAS_PRICE;
@@ -47,6 +46,29 @@ public class CoinFace {
         return BigInteger.valueOf(18);
     }
 
+
+    /**
+     * 严格执行，没有返回长度0，用于ERC721与ERC20区分
+     * @param contract
+     * @return
+     */
+    public static BigInteger getDecimalMust(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Uint256>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"decimals",list,outputParams);
+        if (types!=null&&types.size()==1){
+            /**
+             * 0: uint256: amount 50000000000000000000
+             */
+
+            Uint256 amount= (Uint256)types.get(0);
+            return amount.getValue();
+        }
+        return BigInteger.valueOf(0);
+    }
+
+
     /**
      * 获取合约单位符号
      * @param contract
@@ -64,7 +86,22 @@ public class CoinFace {
         return null;
     }
 
-
+    /**
+     * 获取合约单位符号
+     * @param contract
+     * @return
+     */
+    public static String getName(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Utf8String>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"name",list,outputParams);
+        if (types!=null&&types.size()==1){
+            Utf8String amount= (Utf8String)types.get(0);
+            return amount.getValue();
+        }
+        return null;
+    }
 
     /**
      * 从注册合约获取全部的token
@@ -85,6 +122,23 @@ public class CoinFace {
 
         }
         return tokenInfos;
+    }
+
+    /**
+     * 从注册合约获取全部的token
+     */
+    public static List<Address> getAllTokenArray(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<DynamicArray<Address>>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getTokenList",list,outputParams);
+        if (types!=null&&types.size()==1){
+            Array hunterInfos= (Array)types.get(0);
+            List<Address> ads=hunterInfos.getValue();
+            return ads;
+
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -336,7 +390,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            PubToken_sol_PubToken token=ContractUtil.createContract(pri,new BigInteger(amount).multiply((BigInteger.TEN.pow(18))),18,symbol,tokeName);
+            PubTokenSol token=ContractUtil.createContract(pri,new BigInteger(amount).multiply((BigInteger.TEN.pow(18))),18,symbol,tokeName);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -393,7 +447,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            Redpack_sol_Redpack token=ContractUtil.createContractRed(pri,coinContract);
+            RedpackSol token=ContractUtil.createContractRed(pri,coinContract);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -446,7 +500,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            PayCenter_sol_PayCenter token=ContractUtil.createContractPay(pri,coinContract,BigInteger.ZERO,BigInteger.ZERO);
+            PayCenterSol token=ContractUtil.createContractPay(pri,coinContract,BigInteger.ZERO,BigInteger.ZERO);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -493,13 +547,13 @@ public class CoinFace {
      * 发布报告
      * @param
      */
-    public static BaseMsg createReport(String contract, String priKey, String item, String json){
-        List<Type> params= Arrays.asList(new Utf8String(item),new Utf8String(json));
+    public static BaseMsg createReport(String contract, String priKey, String item, String md5){
+        List<Type> params= Arrays.asList(new Utf8String(item),new Utf8String(md5));
         return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"createReport",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
     public static List<String> getLastReport(String contract,int size){
         List<Type> list=new ArrayList<>();
-        list.add(new Uint(new BigInteger(size+"")));
+        list.add(new Uint8(new BigInteger(size+"")));
         List<TypeReference<?>> outputParams=new ArrayList<>();
         outputParams.add(new TypeReference<DynamicArray<Utf8String>>() {});
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getLastReport",list,outputParams);
@@ -513,33 +567,51 @@ public class CoinFace {
      * 发布新闻
      * @param
      */
-    public static BaseMsg createNews(String contract, String priKey, String item, String json){
-        List<Type> params= Arrays.asList(new Utf8String(item),new Utf8String(json));
+    public static BaseMsg createNews(String contract, String priKey,  String md5){
+        List<Type> params= Arrays.asList(new Utf8String(md5),new Utf8String(md5));
         return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"createNews",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+    }
+    private static  List<String> convertToNative(List<Type> arr) {
+        List<List<String>> out = new ArrayList();
+        Iterator<Type> it = arr.iterator();
+
+        while(it.hasNext()) {
+            out.add((List<String>)it.next().getValue());
+        }
+
+        return out.get(0);
     }
     public static List<String> getLastNews(String contract,int size){
         List<Type> list=new ArrayList<>();
-        list.add(new Uint(new BigInteger(size+"")));
-        List<TypeReference<?>> outputParams=new ArrayList<>();
-        outputParams.add(new TypeReference<DynamicArray<Utf8String>>() {});
+        list.add(new Uint8(new BigInteger(size+"")));
+        List<TypeReference<?>> outputParams=Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Utf8String>>() {});
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getLastNews",list,outputParams);
+
+        return convertToNative(types);
+    }
+    public static String getNews(String contract,String item){
+        List<Type> list=new ArrayList<>();
+        list.add(new Utf8String(item));
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Utf8String>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getNews",list,outputParams);
         if (types!=null&&types.size()==1){
-            Array ows= (Array)types.get(0);
+            Utf8String ows= (Utf8String)types.get(0);
             return ows.getValue();
         }
-        return new ArrayList<>();
+        return "";
     }
     /**
      * 发布公告
      * @param
      */
-    public static BaseMsg createNotice(String contract, String priKey, String item, String json){
-        List<Type> params= Arrays.asList(new Utf8String(item),new Utf8String(json));
+    public static BaseMsg createNotice(String contract, String priKey, String md5){
+        List<Type> params= Arrays.asList(new Utf8String(md5),new Utf8String(md5));
         return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"createNotice",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
     public static List<String> getLastNotice(String contract,int size){
         List<Type> list=new ArrayList<>();
-        list.add(new Uint(new BigInteger(size+"")));
+        list.add(new Uint8(new BigInteger(size+"")));
         List<TypeReference<?>> outputParams=new ArrayList<>();
         outputParams.add(new TypeReference<DynamicArray<Utf8String>>() {});
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getLastNotice",list,outputParams);
@@ -597,7 +669,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            NFT_sol_NFT token= ContractUtil.createContractNFT(pri,tokenName,symbol,pic,content);
+            NftSol token= ContractUtil.createContractNFT(pri,tokenName,symbol,pic,content);
             if (token!=null&& StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -640,13 +712,10 @@ public class CoinFace {
     }
 
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
-        String pri="e062469e7af68463161b1d3c314e206a6cf812c31ef2f436b1f7c1e84c26dd30";
-        BigInteger amount=new BigInteger("10000000");
-        Integer len=18;
-        String symbol="COO";
-        String tokenName="DDT";
-        System.out.println(CoinFace.registerToken("0xb6bfa759f6e42d1074ed88d890eb4cae6f63431d",pri,new BigDecimal(amount).toPlainString(),symbol,tokenName,"",1));
+        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
+        String pri= Crypto.generatePrivateKeyFromMnemonic("dignity place clip make relief dice lumber win copper profit voice render");
+        CoinFace.createNews("0xfd08110f6dddb122dff76875b8af98124b018826",pri,"xasfafasfafaf测试案说法从案发时发生发生法发算法xx");
+        System.out.println(JSON.toJSONString(CoinFace.getLastNews("0xfd08110f6dddb122dff76875b8af98124b018826",8)));
     }
 
 }

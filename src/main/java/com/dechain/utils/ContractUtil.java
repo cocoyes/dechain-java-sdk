@@ -2,11 +2,9 @@ package com.dechain.utils;
 
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
-import com.dechain.face.RedPackFace;
 import com.dechain.msg.coin.BaseMsg;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.tx.gas.ContractGasProvider;
 
 import java.math.BigInteger;
 
@@ -21,12 +19,12 @@ public class ContractUtil {
      * @param tokenName
      * @return
      */
-    public static PubToken_sol_PubToken createContract(String priKey, BigInteger amount,Integer len,String symbol,String tokenName){
+    public static PubTokenSol createContract(String priKey, BigInteger amount, Integer len, String symbol, String tokenName){
         Web3j web3j= EnvInstance.getEnv().getWeb3j();
         Credentials credentials=Credentials.create(priKey);
         try {
-            PubToken_sol_PubToken token=
-                    PubToken_sol_PubToken.
+            PubTokenSol token=
+                    PubTokenSol.
                     deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
                             BaseMsg.GAS_LIMIT.toBigInteger(),amount,tokenName,BigInteger.valueOf(len),symbol).send();
 
@@ -43,12 +41,12 @@ public class ContractUtil {
      * @param priKey
      * @return
      */
-    public static Redpack_sol_Redpack createContractRed(String priKey, String coinTokenAddr){
+    public static RedpackSol createContractRed(String priKey, String coinTokenAddr){
         Web3j web3j= EnvInstance.getEnv().getWeb3j();
         Credentials credentials=Credentials.create(priKey);
         try {
-            Redpack_sol_Redpack token=
-                    Redpack_sol_Redpack.
+            RedpackSol token=
+                    RedpackSol.
                             deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
                                     BaseMsg.GAS_LIMIT.toBigInteger(),coinTokenAddr).send();
 
@@ -65,12 +63,12 @@ public class ContractUtil {
      * @param priKey
      * @return
      */
-    public static NFT_sol_NFT createContractNFT(String priKey, String tokenName,String symbol,String pic,String content){
+    public static NftSol createContractNFT(String priKey, String tokenName, String symbol, String pic, String content){
         Web3j web3j= EnvInstance.getEnv().getWeb3j();
         Credentials credentials=Credentials.create(priKey);
         try {
-            NFT_sol_NFT token=
-                    NFT_sol_NFT.
+            NftSol token=
+                    NftSol.
                             deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
                                     BaseMsg.GAS_LIMIT.toBigInteger(),tokenName,symbol,pic,content).send();
 
@@ -86,12 +84,12 @@ public class ContractUtil {
      * @param priKey
      * @return
      */
-    public static PayCenter_sol_PayCenter createContractPay(String priKey, String coinTokenAddr,BigInteger keepAmount,BigInteger baseFee){
+    public static PayCenterSol createContractPay(String priKey, String coinTokenAddr, BigInteger keepAmount, BigInteger baseFee){
         Web3j web3j= EnvInstance.getEnv().getWeb3j();
         Credentials credentials=Credentials.create(priKey);
         try {
-            PayCenter_sol_PayCenter token=
-                    PayCenter_sol_PayCenter.
+            PayCenterSol token=
+                    PayCenterSol.
                             deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
                                     BaseMsg.GAS_LIMIT.toBigInteger(),coinTokenAddr,keepAmount,baseFee).send();
 
