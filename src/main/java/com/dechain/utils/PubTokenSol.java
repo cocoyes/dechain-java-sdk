@@ -186,8 +186,8 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> createNotice(String item, String json) {
         final Function function = new Function(
                 FUNC_CREATENOTICE,
-                Arrays.<Type>asList(new Utf8String(item),
-                new Utf8String(json)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(item),
+                        new org.web3j.abi.datatypes.Utf8String(json)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -195,15 +195,15 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
                 FUNC_APPROVE,
-                Arrays.<Type>asList(new Address(_spender),
-                new Uint256(_value)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_spender),
+                        new org.web3j.abi.datatypes.generated.Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<String> news(String param0) {
         final Function function = new Function(FUNC_NEWS,
-                Arrays.<Type>asList(new Utf8String(param0)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(param0)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -211,15 +211,15 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> createNews(String item, String json) {
         final Function function = new Function(
                 FUNC_CREATENEWS,
-                Arrays.<Type>asList(new Utf8String(item),
-                new Utf8String(json)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(item),
+                        new org.web3j.abi.datatypes.Utf8String(json)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<String> getReport(String item) {
         final Function function = new Function(FUNC_GETREPORT,
-                Arrays.<Type>asList(new Utf8String(item)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(item)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -233,7 +233,7 @@ public class PubTokenSol extends Contract {
 
     public RemoteCall<String> getNotice(String item) {
         final Function function = new Function(FUNC_GETNOTICE,
-                Arrays.<Type>asList(new Utf8String(item)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(item)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -241,16 +241,16 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> transferFrom(String _from, String _to, BigInteger _value) {
         final Function function = new Function(
                 FUNC_TRANSFERFROM,
-                Arrays.<Type>asList(new Address(_from),
-                new Address(_to),
-                new Uint256(_value)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_from),
+                        new org.web3j.abi.datatypes.Address(_to),
+                        new org.web3j.abi.datatypes.generated.Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> balances(String param0) {
         final Function function = new Function(FUNC_BALANCES,
-                Arrays.<Type>asList(new Address(param0)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(param0)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -271,7 +271,7 @@ public class PubTokenSol extends Contract {
 
     public RemoteCall<Boolean> itemMap(String param0) {
         final Function function = new Function(FUNC_ITEMMAP,
-                Arrays.<Type>asList(new Utf8String(param0)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(param0)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
@@ -302,8 +302,8 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> createReport(String item, String json) {
         final Function function = new Function(
                 FUNC_CREATEREPORT,
-                Arrays.<Type>asList(new Utf8String(item),
-                new Utf8String(json)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(item),
+                        new org.web3j.abi.datatypes.Utf8String(json)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -317,8 +317,8 @@ public class PubTokenSol extends Contract {
 
     public RemoteCall<BigInteger> allowed(String param0, String param1) {
         final Function function = new Function(FUNC_ALLOWED,
-                Arrays.<Type>asList(new Address(param0),
-                new Address(param1)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(param0),
+                        new org.web3j.abi.datatypes.Address(param1)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -332,7 +332,7 @@ public class PubTokenSol extends Contract {
 
     public RemoteCall<String> reports(String param0) {
         final Function function = new Function(FUNC_REPORTS,
-                Arrays.<Type>asList(new Utf8String(param0)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(param0)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -355,22 +355,22 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> decreaseApproval(String _spender, BigInteger _subtractedValue) {
         final Function function = new Function(
                 FUNC_DECREASEAPPROVAL,
-                Arrays.<Type>asList(new Address(_spender),
-                new Uint256(_subtractedValue)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_spender),
+                        new org.web3j.abi.datatypes.generated.Uint256(_subtractedValue)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> balanceOf(String _owner) {
         final Function function = new Function(FUNC_BALANCEOF,
-                Arrays.<Type>asList(new Address(_owner)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> getBankItem(String _user) {
         final Function function = new Function(FUNC_GETBANKITEM,
-                Arrays.<Type>asList(new Address(_user)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_user)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -392,7 +392,7 @@ public class PubTokenSol extends Contract {
 
     public RemoteCall<List> getLastReport(BigInteger _size) {
         final Function function = new Function(FUNC_GETLASTREPORT,
-                Arrays.<Type>asList(new Uint8(_size)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint8(_size)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Utf8String>>() {}));
         return new RemoteCall<List>(
                 new Callable<List>() {
@@ -415,15 +415,15 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> transfer(String _to, BigInteger _value) {
         final Function function = new Function(
                 FUNC_TRANSFER,
-                Arrays.<Type>asList(new Address(_to),
-                new Uint256(_value)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_to),
+                        new org.web3j.abi.datatypes.generated.Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<String> notice(String param0) {
         final Function function = new Function(FUNC_NOTICE,
-                Arrays.<Type>asList(new Utf8String(param0)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(param0)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -437,7 +437,7 @@ public class PubTokenSol extends Contract {
 
     public RemoteCall<String> getNews(String item) {
         final Function function = new Function(FUNC_GETNEWS,
-                Arrays.<Type>asList(new Utf8String(item)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(item)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -445,7 +445,7 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> setBankItem(String json) {
         final Function function = new Function(
                 FUNC_SETBANKITEM,
-                Arrays.<Type>asList(new Utf8String(json)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(json)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -453,23 +453,23 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> increaseApproval(String _spender, BigInteger _addedValue) {
         final Function function = new Function(
                 FUNC_INCREASEAPPROVAL,
-                Arrays.<Type>asList(new Address(_spender),
-                new Uint256(_addedValue)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_spender),
+                        new org.web3j.abi.datatypes.generated.Uint256(_addedValue)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> allowance(String _owner, String _spender) {
         final Function function = new Function(FUNC_ALLOWANCE,
-                Arrays.<Type>asList(new Address(_owner),
-                new Address(_spender)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner),
+                        new org.web3j.abi.datatypes.Address(_spender)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<List> getLastNews(BigInteger _size) {
         final Function function = new Function(FUNC_GETLASTNEWS,
-                Arrays.<Type>asList(new Uint8(_size)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint8(_size)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Utf8String>>() {}));
         return new RemoteCall<List>(
                 new Callable<List>() {
@@ -485,7 +485,7 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> updateCompanyInfo(String _info) {
         final Function function = new Function(
                 FUNC_UPDATECOMPANYINFO,
-                Arrays.<Type>asList(new Utf8String(_info)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_info)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -493,14 +493,14 @@ public class PubTokenSol extends Contract {
     public RemoteCall<TransactionReceipt> transferOwnership(String _newOwner) {
         final Function function = new Function(
                 FUNC_TRANSFEROWNERSHIP,
-                Arrays.<Type>asList(new Address(_newOwner)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_newOwner)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<List> getLastNotice(BigInteger _size) {
         final Function function = new Function(FUNC_GETLASTNOTICE,
-                Arrays.<Type>asList(new Uint8(_size)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint8(_size)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Utf8String>>() {}));
         return new RemoteCall<List>(
                 new Callable<List>() {
@@ -529,9 +529,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<CreateReportEventEventResponse> getCreateReportEventEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(CREATEREPORTEVENT_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CREATEREPORTEVENT_EVENT, transactionReceipt);
         ArrayList<CreateReportEventEventResponse> responses = new ArrayList<CreateReportEventEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             CreateReportEventEventResponse typedResponse = new CreateReportEventEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._item = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -545,7 +545,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, CreateReportEventEventResponse>() {
             @Override
             public CreateReportEventEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(CREATEREPORTEVENT_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CREATEREPORTEVENT_EVENT, log);
                 CreateReportEventEventResponse typedResponse = new CreateReportEventEventResponse();
                 typedResponse.log = log;
                 typedResponse._item = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -562,9 +562,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<CreateNewsEventEventResponse> getCreateNewsEventEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(CREATENEWSEVENT_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CREATENEWSEVENT_EVENT, transactionReceipt);
         ArrayList<CreateNewsEventEventResponse> responses = new ArrayList<CreateNewsEventEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             CreateNewsEventEventResponse typedResponse = new CreateNewsEventEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._item = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -578,7 +578,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, CreateNewsEventEventResponse>() {
             @Override
             public CreateNewsEventEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(CREATENEWSEVENT_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CREATENEWSEVENT_EVENT, log);
                 CreateNewsEventEventResponse typedResponse = new CreateNewsEventEventResponse();
                 typedResponse.log = log;
                 typedResponse._item = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -595,9 +595,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<CreateNoticeEventEventResponse> getCreateNoticeEventEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(CREATENOTICEEVENT_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CREATENOTICEEVENT_EVENT, transactionReceipt);
         ArrayList<CreateNoticeEventEventResponse> responses = new ArrayList<CreateNoticeEventEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             CreateNoticeEventEventResponse typedResponse = new CreateNoticeEventEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._item = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -611,7 +611,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, CreateNoticeEventEventResponse>() {
             @Override
             public CreateNoticeEventEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(CREATENOTICEEVENT_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CREATENOTICEEVENT_EVENT, log);
                 CreateNoticeEventEventResponse typedResponse = new CreateNoticeEventEventResponse();
                 typedResponse.log = log;
                 typedResponse._item = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -628,9 +628,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<PauseEventResponse> getPauseEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSE_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSE_EVENT, transactionReceipt);
         ArrayList<PauseEventResponse> responses = new ArrayList<PauseEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             PauseEventResponse typedResponse = new PauseEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -642,7 +642,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, PauseEventResponse>() {
             @Override
             public PauseEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(PAUSE_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(PAUSE_EVENT, log);
                 PauseEventResponse typedResponse = new PauseEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -657,9 +657,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<UnpauseEventResponse> getUnpauseEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(UNPAUSE_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UNPAUSE_EVENT, transactionReceipt);
         ArrayList<UnpauseEventResponse> responses = new ArrayList<UnpauseEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             UnpauseEventResponse typedResponse = new UnpauseEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -671,7 +671,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, UnpauseEventResponse>() {
             @Override
             public UnpauseEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(UNPAUSE_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UNPAUSE_EVENT, log);
                 UnpauseEventResponse typedResponse = new UnpauseEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -686,9 +686,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<OwnershipRenouncedEventResponse> getOwnershipRenouncedEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPRENOUNCED_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPRENOUNCED_EVENT, transactionReceipt);
         ArrayList<OwnershipRenouncedEventResponse> responses = new ArrayList<OwnershipRenouncedEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             OwnershipRenouncedEventResponse typedResponse = new OwnershipRenouncedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -701,7 +701,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, OwnershipRenouncedEventResponse>() {
             @Override
             public OwnershipRenouncedEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPRENOUNCED_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPRENOUNCED_EVENT, log);
                 OwnershipRenouncedEventResponse typedResponse = new OwnershipRenouncedEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -717,9 +717,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -733,7 +733,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -750,9 +750,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -767,7 +767,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -785,9 +785,9 @@ public class PubTokenSol extends Contract {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -802,7 +802,7 @@ public class PubTokenSol extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -838,36 +838,36 @@ public class PubTokenSol extends Contract {
     }
 
     public static RemoteCall<PubTokenSol> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Uint256(_initialAmount),
-                new Utf8String(_tokenName),
-                new Uint8(_decimalUnits),
-                new Utf8String(_tokenSymbol)));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
+                new org.web3j.abi.datatypes.Utf8String(_tokenName),
+                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
+                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
         return deployRemoteCall(PubTokenSol.class, web3j, credentials, contractGasProvider, BINARY, encodedConstructor);
     }
 
     public static RemoteCall<PubTokenSol> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Uint256(_initialAmount),
-                new Utf8String(_tokenName),
-                new Uint8(_decimalUnits),
-                new Utf8String(_tokenSymbol)));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
+                new org.web3j.abi.datatypes.Utf8String(_tokenName),
+                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
+                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
         return deployRemoteCall(PubTokenSol.class, web3j, transactionManager, contractGasProvider, BINARY, encodedConstructor);
     }
 
     @Deprecated
     public static RemoteCall<PubTokenSol> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Uint256(_initialAmount),
-                new Utf8String(_tokenName),
-                new Uint8(_decimalUnits),
-                new Utf8String(_tokenSymbol)));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
+                new org.web3j.abi.datatypes.Utf8String(_tokenName),
+                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
+                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
         return deployRemoteCall(PubTokenSol.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
     @Deprecated
     public static RemoteCall<PubTokenSol> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Uint256(_initialAmount),
-                new Utf8String(_tokenName),
-                new Uint8(_decimalUnits),
-                new Utf8String(_tokenSymbol)));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
+                new org.web3j.abi.datatypes.Utf8String(_tokenName),
+                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
+                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
         return deployRemoteCall(PubTokenSol.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 

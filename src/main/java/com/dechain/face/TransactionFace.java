@@ -163,6 +163,7 @@ public class TransactionFace {
         }
         String hexValue=contract20Sign(priKey,contract,amount,toAddress);
         Web3j web3j=EnvInstance.getEnv().getWeb3j();
+
         EthSendTransaction ethSendTransaction = null;
         try {
             ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
@@ -388,14 +389,14 @@ public class TransactionFace {
 
 
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
         Web3j web3j=EnvInstance.getEnv().getWeb3j();
 
 
 
         //8e7e58980456096f748dfd8a221f35d3951dc48e79aad91197a744563c0edc9e
-        String priKey="e062469e7af68463161b1d3c314e206a6cf812c31ef2f436b1f7c1e84c26dd30";
-        String toAddr="de1m46cdqk83f95qm877ekhqu62dn88c20vq8rfad";
+        String priKey="602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc";
+        String toAddr="0x8e41AB0D1C260c3632b973934d94CE7307DB0Ded";
 
         System.out.println("old :=799.8999579997217893 \t balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
 
@@ -403,21 +404,12 @@ public class TransactionFace {
 
         //发送普通交易
         System.out.println("-----------------发送普通交易---------------------------");
-        //TransactionFace.sendCommonTrans(priKey,"50.55",toAddr);
+       // TransactionFace.sendCommonTrans(priKey,"50.55",toAddr);
         //System.out.println("balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
         System.out.println("-----------------发送合约交易---------------------------");
         String contractAddress="0x6ffd23b944a2075fcffe2de1d66067092269645e";
         BigInteger am=new BigInteger("5000").multiply(BigInteger.TEN.pow(18));
-      // TransactionFace.sendContractTrans(priKey,contractAddress,am.toString(),toAddr);
-       /* Optional<TransactionReceipt> optional=null;
-        try {
-            optional= web3j.ethGetTransactionReceipt("0x18a10440be0dbd004bc5bb4444404ec6f7faccfa023f61a0d0add8c403fa470e").send().getTransactionReceipt();
-            System.out.println(optional.get().getStatus());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-       //TransactionFace.getTransactionStatus("0x5951546733eab67d73f996d81b49158008a8c2c4e854703044841837ae1817f1");
+      TransactionFace.sendContractTrans(priKey,contractAddress,am.toString(),toAddr);
 
     }
 

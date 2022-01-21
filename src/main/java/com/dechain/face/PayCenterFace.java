@@ -1,5 +1,7 @@
 package com.dechain.face;
 
+import com.dechain.env.EnvBase;
+import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.BaseMsg;
 import com.dechain.msg.pay.BusinessInfo;
 import com.dechain.msg.pay.OrderInfo;
@@ -8,6 +10,7 @@ import com.dechain.msg.red.RedPackInfo;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.protocol.Web3j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -195,7 +198,6 @@ public class PayCenterFace {
         outputParams.add(new TypeReference<Uint256>() {});
         outputParams.add(new TypeReference<Bool>() {});
         outputParams.add(new TypeReference<Address>() {});
-
 
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"findOrder",list,outputParams);
         if (types!=null&&types.size()==5){
@@ -423,7 +425,9 @@ public class PayCenterFace {
 
 
     public static void main(String[] args) {
-
+        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+        Web3j web3j=EnvInstance.getEnv().getWeb3j();
+        System.out.println(payOrder("0001","602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc","0x731bbb4155b8cf9b96ddcdfd5aa3bb806cc8dbac"));
     }
 
 

@@ -2,7 +2,7 @@ package com.dechain.utils;
 
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
-import com.dechain.face.RedPackFace;
+import com.dechain.msg.coin.BaseMsg;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 
@@ -25,8 +25,8 @@ public class ContractUtil {
         try {
             PubTokenSol token=
             PubTokenSol.
-                    deploy(web3j,credentials, RedPackFace.GAS_PRICE.toBigInteger(),
-                            RedPackFace.GAS_LIMIT.toBigInteger(),amount,tokenName,BigInteger.valueOf(len),symbol).send();
+                    deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
+                            BaseMsg.GAS_LIMIT.toBigInteger(),amount,tokenName,BigInteger.valueOf(len),symbol).send();
 
             return token;
         } catch (Exception e) {
@@ -46,9 +46,30 @@ public class ContractUtil {
         Credentials credentials=Credentials.create(priKey);
         try {
             RedpackSol token=
-                    RedpackSol.
-                            deploy(web3j,credentials, RedPackFace.GAS_PRICE.toBigInteger(),
-                                    RedPackFace.GAS_LIMIT.toBigInteger(),coinTokenAddr).send();
+                    RedpackSol.deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
+                                    BaseMsg.GAS_LIMIT.toBigInteger(),coinTokenAddr).send();
+
+            return token;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 创建NFT合约
+     * @param priKey
+     * @return
+     */
+    public static NftSol createContractNFT(String priKey, String tokenName, String symbol, String pic, String content){
+        Web3j web3j= EnvInstance.getEnv().getWeb3j();
+        Credentials credentials=Credentials.create(priKey);
+        try {
+            NftSol token=
+                    NftSol.
+                            deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
+                                    BaseMsg.GAS_LIMIT.toBigInteger(),tokenName,symbol,pic,content).send();
 
             return token;
         } catch (Exception e) {
@@ -68,8 +89,8 @@ public class ContractUtil {
         try {
             PayCenterSol token=
                     PayCenterSol.
-                            deploy(web3j,credentials, RedPackFace.GAS_PRICE.toBigInteger(),
-                                    RedPackFace.GAS_LIMIT.toBigInteger(),coinTokenAddr,keepAmount,baseFee).send();
+                            deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
+                                    BaseMsg.GAS_LIMIT.toBigInteger(),coinTokenAddr,keepAmount,baseFee).send();
 
             return token;
         } catch (Exception e) {

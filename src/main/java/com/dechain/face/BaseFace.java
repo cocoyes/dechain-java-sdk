@@ -1,6 +1,10 @@
 package com.dechain.face;
 
 import com.dechain.msg.coin.BaseMsg;
+
+import com.dechain.msg.coin.RegisterTokenDto;
+import com.dechain.utils.ContractUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.CompletableFuture;
@@ -9,6 +13,7 @@ public class BaseFace {
 
     public static BaseMsg dealMsg(String hash){
         BaseMsg baseMsg=new BaseMsg();
+        baseMsg.setHash(hash);
         try {
             CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
                 return hash;
