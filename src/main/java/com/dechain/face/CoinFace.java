@@ -3,23 +3,17 @@ package com.dechain.face;
 import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
-import com.dechain.msg.coin.BaseMsg;
-import com.dechain.msg.coin.CompanyInfo;
-import com.dechain.msg.coin.RegisterTokenDto;
-import com.dechain.msg.coin.TokenInfo;
-import com.dechain.msg.red.RedPackInfo;
-import com.dechain.utils.ContractUtil;
-import com.dechain.utils.PayCenter_sol_PayCenter;
-import com.dechain.utils.Redpack_sol_Redpack;
-import com.dechain.utils.StandContract_sol_PubToken;
-import com.dechain.utils.crypto.Crypto;
+import com.dechain.msg.coin.*;
+import com.dechain.utils.*;
+import com.dechain.utils.PubTokenSol;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.ReadonlyTransactionManager;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static com.dechain.face.PayCenterFace.GAS_LIMIT;
 import static com.dechain.face.PayCenterFace.GAS_PRICE;
@@ -70,6 +63,18 @@ public class CoinFace {
         return null;
     }
 
+    public static String getName(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Utf8String>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"name",list,outputParams);
+        if (types!=null&&types.size()==1){
+            Utf8String amount= (Utf8String)types.get(0);
+            return amount.getValue();
+        }
+        return null;
+    }
+
 
 
     /**
@@ -92,6 +97,20 @@ public class CoinFace {
         }
         return tokenInfos;
     }
+
+    public static List<Address> getTokenList(String contract){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<DynamicArray<Address>>() {});
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"getTokenList",list,outputParams);
+        if (types!=null&&types.size()==1){
+            Array hunterInfos= (Array)types.get(0);
+            List<Address> ads=hunterInfos.getValue();
+            return ads;
+        }
+        return new ArrayList<>();
+    }
+
 
     /**
      * 获取通证详情
@@ -270,7 +289,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            StandContract_sol_PubToken token=ContractUtil.createContract(pri,new BigInteger(amount).multiply((BigInteger.TEN.pow(18))),18,symbol,tokeName);
+            PubTokenSol token=ContractUtil.createContract(pri,new BigInteger(amount).multiply((BigInteger.TEN.pow(18))),18,symbol,tokeName);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -327,7 +346,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            Redpack_sol_Redpack token=ContractUtil.createContractRed(pri,coinContract);
+            RedpackSol token=ContractUtil.createContractRed(pri,coinContract);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -380,7 +399,7 @@ public class CoinFace {
             if (needFee.compareTo(balance)>0){
                 return RegisterTokenDto.buildError("余额不足，至少需要:"+needFee);
             }
-            PayCenter_sol_PayCenter token=ContractUtil.createContractPay(pri,coinContract,BigInteger.ZERO,BigInteger.ZERO);
+            PayCenterSol token=ContractUtil.createContractPay(pri,coinContract,BigInteger.ZERO,BigInteger.ZERO);
             if (token!=null&&StringUtils.isNotEmpty(token.getContractAddress())){
 
                 CompletableFuture<String> futureSubmit = CompletableFuture.supplyAsync(()->{
@@ -516,6 +535,49 @@ public class CoinFace {
         return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"updateCompanyInfo",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
+
+    /**
+     * 通过hash返回合约地址、消息摘要
+     * type 0 新闻、1公告、2财报
+     */
+    public static CompanyMsgInfo getCompanyMsgInfo(String hash,int type){
+        CompanyMsgInfo companyMsgInfo=new CompanyMsgInfo();
+        TransactionReceipt receipt=TransactionFace.getTransactionDetail(hash);
+        if (receipt==null){
+            return null;
+        }else {
+            companyMsgInfo.setContract(receipt.getTo());
+            companyMsgInfo.setHash(hash);
+            companyMsgInfo.setFrom(receipt.getFrom());
+            Web3j web3j= EnvInstance.getEnv().getWeb3j();
+            ReadonlyTransactionManager transactionManager=new ReadonlyTransactionManager(web3j,"0x3901952De2f16ad9B8646CF59C337d0b445A81Ca");
+            PubTokenSol pubToken= PubTokenSol.load(receipt.getTo(),web3j,transactionManager,RedPackFace.GAS_PRICE.toBigInteger(),
+                    RedPackFace.GAS_LIMIT.toBigInteger());
+            if(type==0){
+                List<PubTokenSol.CreateNewsEventEventResponse> responses=pubToken.getCreateNewsEventEvents(receipt);
+                if(responses!=null&&responses.size()>0){
+                    String _item=responses.get(0)._item;
+                    companyMsgInfo.setSign(_item);
+                }
+            }else if(type==1){
+                List<PubTokenSol.CreateNoticeEventEventResponse> responses=pubToken.getCreateNoticeEventEvents(receipt);
+                if(responses!=null&&responses.size()>0){
+                    String _item=responses.get(0)._item;
+                    companyMsgInfo.setSign(_item);
+                }
+            }else if(type==2){
+                List<PubTokenSol.CreateReportEventEventResponse> responses=pubToken.getCreateReportEventEvents(receipt);
+                if(responses!=null&&responses.size()>0){
+                    String _item=responses.get(0)._item;
+                    companyMsgInfo.setSign(_item);
+                }
+            }else {
+                return null;
+            }
+            return companyMsgInfo;
+        }
+
+    }
 
 
 

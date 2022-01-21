@@ -177,6 +177,11 @@ public class AccountFace {
 */
         EnvInstance.setEnv(new EnvBase("123.100.236.38"));
 
+
+        System.out.println(AccountFace.addressToHex("de1kr9yn3crdrcpzxqk2ueaptt9k0j7uk3eslkw3a"));
+        System.out.println(AccountFace.addressToHex("de1akcaes6c5hyqjdmwqy2huyxjy8n65cryzsap98"));
+        System.out.println(AccountFace.addressToHex("de16kmena4xt3w7lyffhukpsctcuj6x5594x9j45k"));
+
     /*    Long c1=System.currentTimeMillis();
 
         System.out.println(AccountFace.addressToHex("de1m46cdqk83f95qm877ekhqu62dn88c20vq8rfad"));
