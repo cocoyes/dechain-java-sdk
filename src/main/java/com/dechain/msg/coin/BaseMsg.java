@@ -12,12 +12,23 @@ public class BaseMsg {
     private String hash;
     private String msg;
 
+    private String data;
+
     public static BaseMsg buildError(String msg){
         BaseMsg dto=new BaseMsg();
         dto.setSuccess(false);
         dto.setMsg(msg);
         return dto;
     }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public String getMsg() {
         return msg;
     }

@@ -157,7 +157,15 @@ public class AccountFace {
             balance=amount.getValue();
         }
         return EthConvert.fromWei(new BigDecimal(balance), EthConvert.Unit.fromLen(len));
+    }
 
+
+
+
+
+    public static void main(String[] args) {
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        System.out.print(AccountFace.getMainCoinBalance("de1dhf9c4zmdxdnx9m2nq3mkattvqjkwe3mxerxpk"));
     }
 
 }

@@ -62,12 +62,12 @@ public class ContractUtil {
      * @param priKey
      * @return
      */
-    public static NftSol createContractNFT(String priKey, String tokenName, String symbol, String pic, String content){
+    public static NFTSol createContractNFT(String priKey, String tokenName, String symbol, String pic, String content){
         Web3j web3j= EnvInstance.getEnv().getWeb3j();
         Credentials credentials=Credentials.create(priKey);
         try {
-            NftSol token=
-                    NftSol.
+            NFTSol token=
+                    NFTSol.
                             deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
                                     BaseMsg.GAS_LIMIT.toBigInteger(),tokenName,symbol,pic,content).send();
 

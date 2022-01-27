@@ -4,15 +4,14 @@ package com.dechain.face;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 
+import com.dechain.msg.coin.BaseMsg;
+import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -30,6 +29,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+
+import static com.dechain.face.PayCenterFace.GAS_LIMIT;
+import static com.dechain.face.PayCenterFace.GAS_PRICE;
 
 /**
  * 签名类接口
@@ -144,6 +146,29 @@ public class TransactionFace {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static BaseMsg sendCommonAndGet(String priKey, String amount, String toAddress){
+        if (StringUtils.isEmpty(toAddress)){
+            System.out.println("to addr is null");
+            return null;
+        }
+        if (!toAddress.startsWith("0x")){
+            toAddress= AccountFace.addressToHex(toAddress);
+        }
+        String hexValue=commonTransSign(priKey,amount,toAddress);
+        Web3j web3j=EnvInstance.getEnv().getWeb3j();
+        EthSendTransaction ethSendTransaction = null;
+        try {
+            ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+            String transactionHash = ethSendTransaction.getTransactionHash();
+            System.out.println("txid ="+transactionHash );
+            return BaseFace.dealMsg(transactionHash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BaseMsg.buildError("send fail");
     }
 
     /**
@@ -349,7 +374,6 @@ public class TransactionFace {
         return null;
     }
 
-
     /**
      * 无需消耗gas的合约调用，仅限支持view的方法
      */
@@ -379,37 +403,22 @@ public class TransactionFace {
         }
     }
 
+    public static BaseMsg transactionBatch(String prikey, List<Address> addressList, List<Uint> values,String contract,String token){
+        String userAddr = Crypto.generateAddressFromPriv(prikey);
+        String hexAddr=AccountFace.addressToHex(userAddr);
+        List<Type> params= Arrays.asList(new Address(hexAddr),new Address(token),new DynamicArray(addressList),new DynamicArray(values));
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,contract,params,"transferTokens",GAS_LIMIT.toBigInteger().multiply(BigInteger.TEN.multiply(BigInteger.TEN)),GAS_PRICE.toBigInteger()));
+    }
 
 
     /**
      * 计算手续费
      * @param args
      */
-
-
-
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
-        Web3j web3j=EnvInstance.getEnv().getWeb3j();
-
-
-
-        //8e7e58980456096f748dfd8a221f35d3951dc48e79aad91197a744563c0edc9e
-        String priKey="602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc";
-        String toAddr="0x8e41AB0D1C260c3632b973934d94CE7307DB0Ded";
-
-        System.out.println("old :=799.8999579997217893 \t balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
-
-        System.out.println(new BigDecimal("799.8999579997217893").subtract(new BigDecimal("749.3499579997213693")));
-
-        //发送普通交易
-        System.out.println("-----------------发送普通交易---------------------------");
-       // TransactionFace.sendCommonTrans(priKey,"50.55",toAddr);
-        //System.out.println("balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
-        System.out.println("-----------------发送合约交易---------------------------");
-        String contractAddress="0x6ffd23b944a2075fcffe2de1d66067092269645e";
-        BigInteger am=new BigInteger("5000").multiply(BigInteger.TEN.pow(18));
-      TransactionFace.sendContractTrans(priKey,contractAddress,am.toString(),toAddr);
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        String priKey="464ce138ce94e427bbfa3095c30944637b7ca9e64b4068fbb7ce849534b48206";
+        TransactionFace.sendCommonAndGet(priKey,"100","dexxxxxxxx");
 
     }
 
@@ -420,6 +429,7 @@ public class TransactionFace {
     public static void testMethodSign(){
         System.out.println(FunctionEncoder.encode(new Function("redpackCreated",new ArrayList<>(),new ArrayList<>())));
     }
+
 
 
 
