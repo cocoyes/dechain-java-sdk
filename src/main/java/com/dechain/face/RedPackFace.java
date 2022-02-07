@@ -52,6 +52,12 @@ public class RedPackFace {
     }
 
 
+    public static BaseMsg approveSync(String contractFrom,String contractTo,String priKey,BigInteger approveAmount){
+        List<Type> params= Arrays.asList(new Address(contractTo),new Uint256(approveAmount));
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contractFrom,params,"approve",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+    }
+
+
     /**
      * 创建红包
      * @param sendTotal 发送总量     注意，这个根据合约单位长度换算好再传

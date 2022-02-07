@@ -717,7 +717,7 @@ public class CoinFace {
             }else if(type==2){
                 List<PubTokenSol.CreateReportEventEventResponse> responses=pubToken.getCreateReportEventEvents(receipt);
                 if(responses!=null&&responses.size()>0){
-                    String _item=responses.get(0)._item;
+                    String _item=responses.get(0)._json;
                     companyMsgInfo.setSign(_item);
                 }
             }else {
@@ -822,7 +822,7 @@ public class CoinFace {
 
     public static void main(String[] args) {
         EnvInstance.setEnv(new EnvBase("192.168.6.42"));
-        System.out.println(getCompanyMsgInfo("0x3f014faf4fbfbb742af110d064c634063975c173d3528fb438736b3a1e95a1fc",0));
+        System.out.println(CoinFace.getLastReport("0xd85a0CA5a84196cb3137fEafDC8b01AeC17cEbA8",5));
     }
 
 

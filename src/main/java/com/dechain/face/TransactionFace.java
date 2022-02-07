@@ -1,10 +1,12 @@
 package com.dechain.face;
 
 
+import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 
 import com.dechain.msg.coin.BaseMsg;
+import com.dechain.utils.PubTokenSol;
 import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.EventEncoder;
@@ -403,11 +405,19 @@ public class TransactionFace {
         }
     }
 
-    public static BaseMsg transactionBatch(String prikey, List<Address> addressList, List<Uint> values,String contract,String token){
-        String userAddr = Crypto.generateAddressFromPriv(prikey);
-        String hexAddr=AccountFace.addressToHex(userAddr);
-        List<Type> params= Arrays.asList(new Address(hexAddr),new Address(token),new DynamicArray(addressList),new DynamicArray(values));
-        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,contract,params,"transferTokens",GAS_LIMIT.toBigInteger().multiply(BigInteger.TEN.multiply(BigInteger.TEN)),GAS_PRICE.toBigInteger()));
+    public static BaseMsg transactionBatch(String prikey, List<Address> addressList, List<Uint256> values,String contract,String token){
+        BigInteger all=BigInteger.ZERO;
+        for(Uint256 va:values){
+            all=all.add(va.getValue());
+        }
+        BaseMsg bs=RedPackFace.approveSync(token,contract,prikey,all);
+        if(bs.isSuccess()){
+            List<Type> params= Arrays.<Type>asList(new Address(token),new DynamicArray(addressList),new DynamicArray(values));
+            return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,contract,params,"transferTokens",GAS_LIMIT.toBigInteger().multiply(BigInteger.TEN.multiply(BigInteger.TEN)),GAS_PRICE.toBigInteger()));
+        }else{
+            return bs;
+        }
+
     }
 
 
@@ -415,11 +425,28 @@ public class TransactionFace {
      * 计算手续费
      * @param args
      */
-    public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
-        String priKey="464ce138ce94e427bbfa3095c30944637b7ca9e64b4068fbb7ce849534b48206";
-        TransactionFace.sendCommonAndGet(priKey,"100","dexxxxxxxx");
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
+        String priKey="602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc";
+        String contract="0xAB184F88f30b3d537f0D4132c30D7416d6743BdC";
+        String token="0xB2366c7f5201271F9cd25Fef2c8D00eAbc3FcE10";
+        List<Address> addressList=new ArrayList<>();
+        List<String> addressListStr=new ArrayList<>();
+        List<Uint256> valueList=new ArrayList<>();
+        List<BigInteger> valueListBig=new ArrayList<>();
+        addressList.add(new Address("0x8a63a7A7ab08D8Be78a428ca52b00D9a7bc76340"));
+        addressListStr.add("0x8a63a7A7ab08D8Be78a428ca52b00D9a7bc76340");
+        valueList.add(new Uint256(BigInteger.TEN.pow(18).multiply(new BigInteger("1"))));
+        valueListBig.add(BigInteger.TEN.pow(18).multiply(new BigInteger("1")));
+       TransactionFace.transactionBatch(priKey,addressList,valueList,contract,token);
+/*
+        RedPackFace.approve(token,contract,priKey,new BigInteger("100000000000000000000"));
 
+        Credentials credentials=Credentials.create(priKey);
+        Web3j web3j= EnvInstance.getEnv().getWeb3j();
+        PubTokenSol pubTokenSol=PubTokenSol.load(contract,web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(), BaseMsg.GAS_LIMIT.toBigInteger());
+        String hash=pubTokenSol.transferTokens(token,addressListStr,valueListBig,new BigInteger("5000000000")).sendAsync().get().getTransactionHash();
+        System.out.println(JSON.toJSONString(BaseFace.dealMsg(hash)));*/
     }
 
 
