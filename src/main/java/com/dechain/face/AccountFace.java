@@ -157,37 +157,15 @@ public class AccountFace {
             balance=amount.getValue();
         }
         return EthConvert.fromWei(new BigDecimal(balance), EthConvert.Unit.fromLen(len));
-
     }
+
 
 
 
 
     public static void main(String[] args) {
-        //System.out.println(AccountFace.importByMnemonic("shy smile throw crawl broken wage like blouse easily office under final long ignore width envelope mosquito mention face slam armor garbage grief laundry"));
-        //String a=IbanUtil.calculateCheckDigit("XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS");
-        //System.out.println(a);
-       // String addr="de1kwh0z7kmcyx7kkq53anjs8k2dj46fgc33uc9gt";
-       // System.out.println(AccountFace.addressToHex(addr));
-        /*EnvInstance.setEnv(new EnvBase("192.168.6.42"));
-        System.out.println(AccountFace.createAccount());
-        System.out.println(AccountFace.getMainCoinBalance("de1u5rrg73d4hflx6psfp06pyadzy669dykg0lprl"));
-        System.out.println(AccountFace.getContractCoinBalance("de1u5rrg73d4hflx6psfp06pyadzy669dykg0lprl","0xfd6656fc53f1d389e23877c59f357e65bd3d6f91",18));
-*/
-
         EnvInstance.setEnv(new EnvBase("39.103.141.174"));
-        //System.out.println(AccountFace.getContractCoinBalance("0xb3aef17adbc10deb58148f67281eca6caba4a311","0x6204865bff7ac09743aaf9e97a570a4bd3cffd92",18));
-    /*    Long c1=System.currentTimeMillis();
-
-        System.out.println(AccountFace.addressToHex("de1m46cdqk83f95qm877ekhqu62dn88c20vq8rfad"));
-        System.out.println(AccountFace.getContractCoinBalance("0x8a7D005647e1d12717ea1C15eE8CC686Fee4c226","0x938758e2801d67c024b28007b1e3eefaa265bc47",18));
-        Long c2=System.currentTimeMillis();
-        System.out.println(c2-c1);*/
-       // System.out.println(AccountFace.getContractCoinBalance("0x2911670c2e5873fc17b7dc6e769d5c53ee1713aa","0x6ffd23b944a2075fcffe2de1d66067092269645e",18));
-        System.out.println(AccountFace.getMainCoinBalance("de1rp5spkc9evu4v35w9fqhc5qzrntmnrwn492aqy"));
-        //System.out.println(AccountFace.importByMnemonic("off zoo one tiny educate latin input memory produce code jar gospel"));
+        System.out.print(AccountFace.getMainCoinBalance("de1dhf9c4zmdxdnx9m2nq3mkattvqjkwe3mxerxpk"));
     }
-
-
 
 }

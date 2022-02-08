@@ -1,18 +1,19 @@
 package com.dechain.face;
 
 
+import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 
+import com.dechain.msg.coin.BaseMsg;
+import com.dechain.utils.PubTokenSol;
+import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -30,6 +31,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+
+import static com.dechain.face.PayCenterFace.GAS_LIMIT;
+import static com.dechain.face.PayCenterFace.GAS_PRICE;
 
 /**
  * 签名类接口
@@ -144,6 +148,29 @@ public class TransactionFace {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static BaseMsg sendCommonAndGet(String priKey, String amount, String toAddress){
+        if (StringUtils.isEmpty(toAddress)){
+            System.out.println("to addr is null");
+            return null;
+        }
+        if (!toAddress.startsWith("0x")){
+            toAddress= AccountFace.addressToHex(toAddress);
+        }
+        String hexValue=commonTransSign(priKey,amount,toAddress);
+        Web3j web3j=EnvInstance.getEnv().getWeb3j();
+        EthSendTransaction ethSendTransaction = null;
+        try {
+            ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+            String transactionHash = ethSendTransaction.getTransactionHash();
+            System.out.println("txid ="+transactionHash );
+            return BaseFace.dealMsg(transactionHash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BaseMsg.buildError("send fail");
     }
 
     /**
@@ -349,7 +376,6 @@ public class TransactionFace {
         return null;
     }
 
-
     /**
      * 无需消耗gas的合约调用，仅限支持view的方法
      */
@@ -379,47 +405,48 @@ public class TransactionFace {
         }
     }
 
+    public static BaseMsg transactionBatch(String prikey, List<Address> addressList, List<Uint256> values,String contract,String token){
+        BigInteger all=BigInteger.ZERO;
+        for(Uint256 va:values){
+            all=all.add(va.getValue());
+        }
+        BaseMsg bs=RedPackFace.approveSync(token,contract,prikey,all);
+        if(bs.isSuccess()){
+            List<Type> params= Arrays.<Type>asList(new Address(token),new DynamicArray(addressList),new DynamicArray(values));
+            return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,contract,params,"transferTokens",GAS_LIMIT.toBigInteger().multiply(BigInteger.TEN.multiply(BigInteger.TEN)),GAS_PRICE.toBigInteger()));
+        }else{
+            return bs;
+        }
+
+    }
 
 
     /**
      * 计算手续费
      * @param args
      */
-
-
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         EnvInstance.setEnv(new EnvBase("192.168.6.42"));
-        Web3j web3j=EnvInstance.getEnv().getWeb3j();
-
-
-
-        //8e7e58980456096f748dfd8a221f35d3951dc48e79aad91197a744563c0edc9e
         String priKey="602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc";
-        String toAddr="0x8e41AB0D1C260c3632b973934d94CE7307DB0Ded";
+        String contract="0xAB184F88f30b3d537f0D4132c30D7416d6743BdC";
+        String token="0xB2366c7f5201271F9cd25Fef2c8D00eAbc3FcE10";
+        List<Address> addressList=new ArrayList<>();
+        List<String> addressListStr=new ArrayList<>();
+        List<Uint256> valueList=new ArrayList<>();
+        List<BigInteger> valueListBig=new ArrayList<>();
+        addressList.add(new Address("0x8a63a7A7ab08D8Be78a428ca52b00D9a7bc76340"));
+        addressListStr.add("0x8a63a7A7ab08D8Be78a428ca52b00D9a7bc76340");
+        valueList.add(new Uint256(BigInteger.TEN.pow(18).multiply(new BigInteger("1"))));
+        valueListBig.add(BigInteger.TEN.pow(18).multiply(new BigInteger("1")));
+       TransactionFace.transactionBatch(priKey,addressList,valueList,contract,token);
+/*
+        RedPackFace.approve(token,contract,priKey,new BigInteger("100000000000000000000"));
 
-        System.out.println("old :=799.8999579997217893 \t balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
-
-        System.out.println(new BigDecimal("799.8999579997217893").subtract(new BigDecimal("749.3499579997213693")));
-
-        //发送普通交易
-        System.out.println("-----------------发送普通交易---------------------------");
-       // TransactionFace.sendCommonTrans(priKey,"50.55",toAddr);
-        //System.out.println("balance:"+AccountFace.getMainCoinBalance("0x02382e262c19138e7b8cd4725abd4aa921b77bc4"));
-        System.out.println("-----------------发送合约交易---------------------------");
-        String contractAddress="0x6ffd23b944a2075fcffe2de1d66067092269645e";
-        BigInteger am=new BigInteger("5000").multiply(BigInteger.TEN.pow(18));
-      TransactionFace.sendContractTrans(priKey,contractAddress,am.toString(),toAddr);
-       /* Optional<TransactionReceipt> optional=null;
-        try {
-            optional= web3j.ethGetTransactionReceipt("0x18a10440be0dbd004bc5bb4444404ec6f7faccfa023f61a0d0add8c403fa470e").send().getTransactionReceipt();
-            System.out.println(optional.get().getStatus());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-       //TransactionFace.getTransactionStatus("0x5951546733eab67d73f996d81b49158008a8c2c4e854703044841837ae1817f1");
-
+        Credentials credentials=Credentials.create(priKey);
+        Web3j web3j= EnvInstance.getEnv().getWeb3j();
+        PubTokenSol pubTokenSol=PubTokenSol.load(contract,web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(), BaseMsg.GAS_LIMIT.toBigInteger());
+        String hash=pubTokenSol.transferTokens(token,addressListStr,valueListBig,new BigInteger("5000000000")).sendAsync().get().getTransactionHash();
+        System.out.println(JSON.toJSONString(BaseFace.dealMsg(hash)));*/
     }
 
 
@@ -429,6 +456,7 @@ public class TransactionFace {
     public static void testMethodSign(){
         System.out.println(FunctionEncoder.encode(new Function("redpackCreated",new ArrayList<>(),new ArrayList<>())));
     }
+
 
 
 
