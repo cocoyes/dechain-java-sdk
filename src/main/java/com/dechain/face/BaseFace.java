@@ -1,13 +1,31 @@
 package com.dechain.face;
 
+import com.alibaba.fastjson.JSON;
+import com.dechain.env.EnvBase;
+import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.BaseMsg;
 
 import com.dechain.msg.coin.RegisterTokenDto;
 import com.dechain.utils.ContractUtil;
 
+import com.dechain.utils.RegisterSol;
 import org.apache.commons.lang3.StringUtils;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.DynamicArray;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Bytes32;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import static com.dechain.face.PayCenterFace.GAS_LIMIT;
+import static com.dechain.face.PayCenterFace.GAS_PRICE;
 
 public class BaseFace {
 
@@ -52,4 +70,27 @@ public class BaseFace {
     }
 
 
+
+    public static Bytes32 stringToBytes32(String string) {
+        byte[] byteValue = string.getBytes();
+        byte[] byteValueLen32 = new byte[32];
+        System.arraycopy(byteValue, 0, byteValueLen32, 0, byteValue.length);
+        return new Bytes32(byteValueLen32);
+    }
+
+    public static void main(String[] args) throws Exception {
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        String priKey="6e8e06bc5e83d82e90c63370fcf741b0a40e48f31a5789b698002e99a0b512e8";
+        String name="太极通";
+        test();
+    }
+
+    private static void test(){
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        String priKey="6e8e06bc5e83d82e90c63370fcf741b0a40e48f31a5789b698002e99a0b512e8";
+        String name="太极通";
+        List<Type> params=Arrays.<Type>asList(new DynamicArray<Address>(new Address("0xe18c0c5336bd9f09423f9ad53070e6940e72f3f0")),new DynamicArray<Utf8String>(new Utf8String(name)));
+        //List<Type> params= Arrays.asList(new DynamicArray(new Address("0xfcf2fa6b2abb863e73d421797944aa19ec719811")),new DynamicArray(new Utf8String(name)));
+        BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,"0x2ea7b8661D7395bcD6d777C50B075BDd2E61b110",params,"updateTokenName",GAS_LIMIT.toBigInteger().multiply(BigInteger.TEN),GAS_PRICE.toBigInteger().multiply(BigInteger.TEN)));
+    }
 }

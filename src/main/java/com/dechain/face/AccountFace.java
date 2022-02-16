@@ -164,8 +164,15 @@ public class AccountFace {
 
 
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
-        System.out.print(AccountFace.getMainCoinBalance("de1dhf9c4zmdxdnx9m2nq3mkattvqjkwe3mxerxpk"));
+       // EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        //System.out.print(AccountFace.getMainCoinBalance("de1dhf9c4zmdxdnx9m2nq3mkattvqjkwe3mxerxpk"));
+
+        //String pri=Crypto.generatePrivateKeyFromMnemonic("dignity place clip make relief dice lumber win copper profit voice render");
+      //  System.out.println(pri);
+
+
+        System.out.println(AccountFace.addressToHex("de1up399ts3kdqkg3muymzckhk6pycszfckzhsj9z"));
+
     }
 
 }

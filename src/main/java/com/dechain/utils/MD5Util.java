@@ -84,13 +84,7 @@ public class MD5Util {
     }
 
     public static void main(String args[]) {
-        String str = "在我们的程序中，不管是什么，都会有安全问题，今天就说的是MD5加密的方法\n" +
-                "\n" +
-                "MD5是哈希算法，也就是 从明文A到密文B很容易，但是从密文B到明文A几乎不可能\n" +
-                "\n" +
-                "也就是说，给你密文，是几乎无法通过解密来得到明文的。\n" +
-                "\n" +
-                "这个一般用于存储密码。也就是数据库里存的是密文，管理员只能看到密文，而看不到明文。";
+        String str = "0x14bCb8d35aE585b09433AdD576fB4b8B8d97bD2A";
         Long b1 = System.currentTimeMillis();
         System.out.println(MD5Util.encode(str));
         Long e1 = System.currentTimeMillis();

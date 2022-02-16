@@ -426,7 +426,11 @@ public class TransactionFace {
      * @param args
      */
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        if(true){
+            testStatus("0xb93a10a2fbbbb512195165e71e78973c1bedb55c4b1419e0a6fec8ca4dedf68e");
+            return;
+        }
         String priKey="602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc";
         String contract="0xAB184F88f30b3d537f0D4132c30D7416d6743BdC";
         String token="0xB2366c7f5201271F9cd25Fef2c8D00eAbc3FcE10";
@@ -451,9 +455,12 @@ public class TransactionFace {
 
 
 
+    private static void  testStatus(String hs){
+        System.out.println(TransactionFace.getTransactionStatus(hs));
+    }
 
 
-    public static void testMethodSign(){
+    private static void testMethodSign(){
         System.out.println(FunctionEncoder.encode(new Function("redpackCreated",new ArrayList<>(),new ArrayList<>())));
     }
 

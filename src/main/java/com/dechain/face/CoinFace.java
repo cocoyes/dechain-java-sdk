@@ -817,6 +817,77 @@ public class CoinFace {
     }
 
 
+    /**
+     * 更新排序
+     * @param contract
+     * @param priKey
+     * @param tokenContract
+     * @param sort
+     * @return
+     */
+    public static BaseMsg changeTokenSort(String contract, String priKey, String tokenContract,String sort){
+        List<Type> params= Arrays.asList(new Address(tokenContract),new Uint(new BigInteger(sort)));
+        BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"changeTokenSort",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+        return baseMsg;
+    }
+
+    /**
+     * 更新状态
+     * @param contract
+     * @param priKey
+     * @param tokenContract
+     * @return
+     */
+    public static BaseMsg updateLock(String contract, String priKey, String tokenContract,boolean op){
+        String method=op?"unlockToken":"lockToken";
+        List<Type> params= Arrays.asList(new Address(tokenContract));
+        BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,method,GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+        return baseMsg;
+    }
+
+    /**
+     * 更新类型
+     * @param contract
+     * @param priKey
+     * @param tokenContract
+     * @param type
+     * @return
+     */
+    public static BaseMsg changeTokenType(String contract, String priKey, String tokenContract,String type){
+        List<Type> params= Arrays.asList(new Address(tokenContract),new Uint(new BigInteger(type)));
+        BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"changeTokenCtype",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+        return baseMsg;
+    }
+
+    /**
+     * 更新名称
+     * @param contract
+     * @param priKey
+     * @param tokenContract
+     * @param name
+     * @return
+     */
+    public static BaseMsg changeTokenName(String contract, String priKey, String tokenContract,String name){
+        List<Type> params= Arrays.asList(new DynamicArray(new Address(tokenContract)),new DynamicArray(new Utf8String(name)));
+        BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"updateTokenName",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+        return baseMsg;
+    }
+
+    /**
+     * 更新图标
+     * @param contract
+     * @param priKey
+     * @param tokenContract
+     * @param name
+     * @return
+     */
+    public static BaseMsg changeTokenIcon(String contract, String priKey, String tokenContract,String name){
+        List<Type> params= Arrays.asList(new DynamicArray(new Address(tokenContract)),new DynamicArray(new Utf8String(name)));
+        BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,contract,params,"updateTokenIcon",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+        return baseMsg;
+    }
+
+
 
 
 

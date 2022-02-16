@@ -33,9 +33,7 @@ public class NFTFace {
             List<Address> ads=hunterInfos.getValue();
             ads.forEach(address -> {
                 NFTMarketItem tokenInfo= getNFTCMarketDetail(registerContract,address.getValue());
-                if (tokenInfo!=null&&tokenInfo.getUsed()){
-                    nftMarketItems.add(tokenInfo);
-                }
+                nftMarketItems.add(tokenInfo);
             });
         }
         return nftMarketItems;

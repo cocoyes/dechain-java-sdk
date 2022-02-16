@@ -211,7 +211,11 @@ public class RedPackFace {
 
 
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("192.168.6.42"));
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        if(true){
+            widthdraw();
+            return;
+        }
         Web3j web3j=EnvInstance.getEnv().getWeb3j();
         String pri=Crypto.generatePrivateKeyFromMnemonic("dignity place clip make relief dice lumber win copper profit voice render");
         List<TokenInfo> list=CoinFace.getAllToken("0xAc15653c39b351cAFf64eC691bA56Bf7CEE18Fe5");
@@ -240,6 +244,16 @@ public class RedPackFace {
 
     public static void test2(){
         RedPackFace.getApproveRemainBalance("0x1cf21b727baa7782b07aa08b6870c38b19659a9d","0xdd758682c78A4B406cfEf66D70734A6CcE7c29eC","0x6ffd23b944a2075fcffe2de1d66067092269645e");
+    }
+
+
+    public static void widthdraw(){
+        //0xa2f0a40c9551e765e96e26cc2dbbb1742a02a639
+        //8e5f25187fc51c98aa37bb87d216b742bc3594ee2fb24d40b7187e26fb24e4b7
+        //164449636977
+
+        System.out.println(JSON.toJSONString(getSendPackInfo("164449636977","0xa2f0a40c9551e765e96e26cc2dbbb1742a02a639")));
+        System.out.println(JSON.toJSONString(BaseFace.dealMsg(withdrawBalance("0xa2f0a40c9551e765e96e26cc2dbbb1742a02a639","8e5f25187fc51c98aa37bb87d216b742bc3594ee2fb24d40b7187e26fb24e4b7","164449636977"))));
     }
 
 }
