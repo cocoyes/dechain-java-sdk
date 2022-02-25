@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.parser.Feature;
+import com.dechain.face.AccountFace;
+import com.dechain.utils.crypto.AddressUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dechain.env.EnvInstance;
 import com.dechain.msg.tx.*;
@@ -46,6 +49,10 @@ public class MsgBase {
         PrivateKey pri = new PrivateKey(prikeyStr);
         init(pri);
     }
+    public void initPrikey(String prikey) {
+        PrivateKey pri = new PrivateKey(prikey);
+        init(pri);
+    }
 
     public void init(PrivateKey privateKey) {
         priKeyString = privateKey.getPriKey();
@@ -53,7 +60,7 @@ public class MsgBase {
     }
 
     private String getAccountPrivate(String userAddress) {
-        String url = EnvInstance.getEnv().GetRestServerUrl() +
+        String url =EnvInstance.getEnv().getIpAddrServerUrl()+
                 EnvInstance.getEnv().GetRestPathPrefix() +
                 EnvInstance.getEnv().GetAccountUrlPath() + userAddress;
         System.out.println(url);
@@ -62,15 +69,17 @@ public class MsgBase {
 
     private String getSequance(JSONObject account) {
         String res = account
-                .getJSONObject("value")
-                .get("sequence").toString();
+                .getJSONObject("account")
+                .getJSONObject("base_account")
+                .getString("sequence");
         return res;
     }
 
     private String getAccountNumber(JSONObject account) {
         String res = account
-                .getJSONObject("value")
-                .get("account_number").toString();
+                .getJSONObject("account")
+                .getJSONObject("base_account")
+                .getString("account_number");
         return res;
     }
 
@@ -78,7 +87,7 @@ public class MsgBase {
         System.out.println("Broadcast tx:");
         System.out.println(tx);
 
-        System.out.println("Response:");
+        System.out.println( url+EnvInstance.getEnv().GetTxUrlPath()+"     Response:");
         String res = HttpUtils.httpPost(url + EnvInstance.getEnv().GetTxUrlPath(), tx);
         JSONObject result = JSON.parseObject(res);
 
@@ -99,9 +108,9 @@ public class MsgBase {
 
             BroadcastTx signedTx = unsignedTx.signed(signature);
 
-            return broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
+            return broadcast(signedTx.toJson(), EnvInstance.getEnv().getIpAddrServerUrl());
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
             return new JSONObject();
         }
     }
@@ -120,7 +129,7 @@ public class MsgBase {
 
             if (feeAmount.length() > 0) {
                 Token amount = new Token();
-                amount.setDenom(EnvInstance.getEnv().GetDenom());
+                amount.setDenom("aphoton");
                 amount.setAmount(Utils.NewDecString(feeAmount));
                 amountList.add(amount);
             }
@@ -142,7 +151,7 @@ public class MsgBase {
 
             tx = new UnsignedTx(txValue, unsignedTxJson);
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
 
         return tx;
@@ -169,7 +178,7 @@ public class MsgBase {
     public void init(String pubkey) {
         pubKeyString = pubkey;
         address = Crypto.generateAddressFromPub(pubKeyString);
-        JSONObject accountJson = JSON.parseObject(getAccountPrivate(address));
+        JSONObject accountJson = JSON.parseObject(getAccountPrivate(AddressUtil.convertAddressFromHexToEvmosBech32(AccountFace.addressToHex(address))), Feature.DisableSpecialKeyDetect);
         sequenceNum = getSequance(accountJson);
         accountNum = getAccountNumber(accountJson);
         operAddress = Crypto.generateValidatorAddressFromPub(pubKeyString);

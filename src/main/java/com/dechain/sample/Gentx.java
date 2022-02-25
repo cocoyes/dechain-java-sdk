@@ -30,7 +30,7 @@ public class Gentx {
             System.out.println(signedTx.toJson());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 }

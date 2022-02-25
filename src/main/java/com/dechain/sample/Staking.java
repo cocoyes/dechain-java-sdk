@@ -59,7 +59,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -123,7 +123,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -189,7 +189,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -210,7 +210,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -231,7 +231,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -252,7 +252,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 
@@ -273,7 +273,7 @@ public class Staking {
             MsgBase.broadcast(signedTx.toJson(), EnvInstance.getEnv().GetRestServerUrl());
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 }

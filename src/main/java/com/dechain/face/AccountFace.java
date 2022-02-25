@@ -171,8 +171,9 @@ public class AccountFace {
       //  System.out.println(pri);
 
 
-        System.out.println(AccountFace.addressToHex("de1up399ts3kdqkg3muymzckhk6pycszfckzhsj9z"));
+        System.out.println(AccountFace.importByMnemonic("dignity place clip make relief dice lumber win copper profit voice render"));
 
+       System.out.println(AccountFace.hexToAddress("0xe14D2E1aE83801A6f1A8B865b9188a0285dfa51c"));
     }
 
 }

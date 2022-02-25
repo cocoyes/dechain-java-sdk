@@ -17,7 +17,7 @@ public class UnsignedTx {
 
         this.broadcastTx = new BroadcastTx();
         this.broadcastTx.setTx(txValue);
-        this.broadcastTx.setMode("block");
+        this.broadcastTx.setMode("BROADCAST_MODE_BLOCK");
 
         this.broadcastValue = new BroadcastValue();
         this.broadcastValue.setTx(txValue);

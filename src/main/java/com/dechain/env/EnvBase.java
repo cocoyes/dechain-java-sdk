@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 public class EnvBase {
 
+    protected String ipAddr;
+    protected String ipAddrServerUrl;
     protected String restServerUrl;
     protected String mainPrefix;
     protected String denom;
@@ -32,18 +34,20 @@ public class EnvBase {
 
     public EnvBase() {
         this.restServerUrl = "http://127.0.0.1:8545";
+        this.ipAddr="127.0.0.1";
+        this.ipAddrServerUrl="http://"+ipAddr+":1317";
         this.mainPrefix = "de";
         this.denom = "de";
         //todo
-        this.chainID = "dchain_9000-1";
+        this.chainID = "evmos_9000-1";
         this.hdPath = "M/44H/60H/0H/0/0";
         this.validatorAddrPrefix = "exvaloper";
         this.pubPrefix = "depub";
         //todo
-        this.restPathPrefix = "/dechain/v1";
+        this.restPathPrefix = "/cosmos/v1";
         //todo
-        this.txUrlPath = "/dechain/v1/txs";
-        this.accountUrlPath = "/auth/accounts/";
+        this.txUrlPath = "/cosmos/v1/txs";
+        this.accountUrlPath = "/accounts/";
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(30*1000, TimeUnit.MILLISECONDS);
         builder.writeTimeout(30*1000, TimeUnit.MILLISECONDS);
@@ -67,17 +71,19 @@ public class EnvBase {
     public EnvBase(String ip) {
         this.restServerUrl = "http://"+ip+":8545";
         this.mainPrefix = "de";
+        this.ipAddr=ip;
         this.denom = "de";
+        this.ipAddrServerUrl="http://"+ipAddr+":1317";
         //todo
-        this.chainID = "dchain_9000-1";
+        this.chainID = "evmos_9000-1";
         this.hdPath = "M/44H/60H/0H/0/0";
-        this.validatorAddrPrefix = "exvaloper";
+        this.validatorAddrPrefix = "evmosvaloper";
         this.pubPrefix = "depub";
         //todo
-        this.restPathPrefix = "/dechain/v1";
+        this.restPathPrefix = "/cosmos/auth/v1beta1";
         //todo
-        this.txUrlPath = "/dechain/v1/txs";
-        this.accountUrlPath = "/auth/accounts/";
+        this.txUrlPath = "/cosmos/tx/v1beta1/txs";
+        this.accountUrlPath = "/accounts/";
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(30*1000, TimeUnit.MILLISECONDS);
         builder.writeTimeout(30*1000, TimeUnit.MILLISECONDS);
@@ -96,6 +102,26 @@ public class EnvBase {
         headers.put("Content-Type", "application/json");
         jsonrpcClient.setHeaders(headers);
         this.jsonrpcClient=jsonrpcClient;
+    }
+
+    public String getIpAddrServerUrl() {
+        return ipAddrServerUrl;
+    }
+
+    public String getRestServerUrl() {
+        return restServerUrl;
+    }
+
+    public void setIpAddrServerUrl(String ipAddrServerUrl) {
+        this.ipAddrServerUrl = ipAddrServerUrl;
+    }
+
+    public String getIpAddr() {
+        return ipAddr;
+    }
+
+    public void setIpAddr(String ipAddr) {
+        this.ipAddr = ipAddr;
     }
 
     public Web3j getWeb3j() {

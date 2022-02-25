@@ -1,5 +1,6 @@
 package com.dechain.msg.staking;
 
+import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 import com.dechain.msg.MsgBase;
 import com.dechain.msg.common.Message;
@@ -8,16 +9,16 @@ import com.dechain.utils.Utils;
 
 public class MsgDeposit extends MsgBase {
     public MsgDeposit() {
-        setMsgType("dechain/staking/MsgDeposit");
+        setMsgType("/cosmos.staking.v1beta1.MsgDelegate");
     }
 
     public static void main(String[] args) {
-        EnvInstance.setEnv("okq");
+        EnvInstance.setEnv(new EnvBase("192.168.6.38"));
 
         MsgDeposit msg = new MsgDeposit();
-        msg.initMnemonic("puzzle glide follow cruel say burst deliver wild tragic galaxy lumber offer");
+        msg.initPrikey("506f2f4da344307d92069162483f62c43560f40ab7cd99414f01b14539a88108");
 
-        Message messages = msg.produceMsg("de", "10.00000000", "dechain10q0rk5qnyag7wfvvt7rtphlw589m7frsku8qc9");
+        Message messages = msg.produceMsg("aphoton", "10.00000000", "evmosvaloper1u9xjuxhg8qq6dudghpjmjxy2q2zalfgu4uqr26");
 
         msg.submit(messages, "6.00000000", "200000", "");
     }

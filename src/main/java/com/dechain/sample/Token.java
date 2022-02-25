@@ -55,7 +55,7 @@ public class Token {
         try {
             msg.submit(messages, "0.03", "2000000", "");
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 }

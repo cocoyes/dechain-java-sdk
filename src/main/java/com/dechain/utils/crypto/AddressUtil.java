@@ -1,6 +1,8 @@
 package com.dechain.utils.crypto;
 
+import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
+import com.dechain.face.AccountFace;
 import com.dechain.utils.crypto.encode.Bech32;
 import com.dechain.utils.crypto.encode.ConvertBits;
 import com.dechain.utils.crypto.hash.Ripemd;
@@ -121,5 +123,35 @@ public class AddressUtil {
             throw new RuntimeException(e);
         }
         return valAddress;
+    }
+
+
+    public static String convertAddressFromHexToEvmosBech32(String hexAddress){
+        byte[] address = Numeric.hexStringToByteArray(hexAddress);
+
+        String bech32Address = null;
+        try {
+            byte[] bytes = encode(0, address);
+            bech32Address = Bech32.encode("evmos", bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return bech32Address;
+    }
+
+
+    public static void main(String[] args) {
+        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
+        priToHexAndToBench32AndToVal("6e8e06bc5e83d82e90c63370fcf741b0a40e48f31a5789b698002e99a0b512e8");
+    }
+
+
+    private static void priToHexAndToBench32AndToVal(String pri){
+        String b32=Crypto.generateAddressFromPriv(pri);
+        System.out.println(b32);
+        String hex=AccountFace.addressToHex(b32);
+        System.out.println(hex);
+        String val=convertAddressFromBech32ToVal(b32);
+        System.out.println(val);
     }
 }

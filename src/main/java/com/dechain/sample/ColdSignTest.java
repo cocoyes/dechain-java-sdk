@@ -85,7 +85,7 @@ public class ColdSignTest {
             MsgBase.broadcast(signedTx.toJson(), "http://localhost:26659");
 
         } catch (Exception e) {
-            System.out.println("serialize transfer msg failed");
+            System.out.println("serialize transfer msg failed"+e.getMessage());
         }
     }
 }
