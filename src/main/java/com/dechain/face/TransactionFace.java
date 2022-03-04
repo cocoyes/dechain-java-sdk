@@ -121,6 +121,10 @@ public class TransactionFace {
     }
 
 
+
+
+
+
     /**
      * 发送普通交易
      * @param priKey
@@ -197,6 +201,36 @@ public class TransactionFace {
             String transactionHash = ethSendTransaction.getTransactionHash();
             System.out.println("txid ="+transactionHash );
             return transactionHash;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 发送合约交易
+     * @param priKey
+     * @param amount
+     * @param toAddress
+     * @return
+     */
+    public static BaseMsg sendContractTransAndGet(String priKey,String contract,String amount,String toAddress){
+        if (StringUtils.isEmpty(toAddress)){
+            System.out.println("to addr is null");
+            return null;
+        }
+        if (!toAddress.startsWith("0x")){
+            toAddress= AccountFace.addressToHex(toAddress);
+        }
+        String hexValue=contract20Sign(priKey,contract,amount,toAddress);
+        Web3j web3j=EnvInstance.getEnv().getWeb3j();
+
+        EthSendTransaction ethSendTransaction = null;
+        try {
+            ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+            String transactionHash = ethSendTransaction.getTransactionHash();
+            System.out.println("txid ="+transactionHash );
+            return BaseFace.dealMsg(transactionHash);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -421,36 +455,38 @@ public class TransactionFace {
     }
 
 
+    public static Transaction getTransaction(String hash){
+        Web3j web3j=EnvInstance.getEnv().getWeb3j();
+        Optional<Transaction> optional=null;
+        try {
+            optional= web3j.ethGetTransactionByHash(hash).send().getTransaction();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (optional!=null&&optional.isPresent()){
+            return optional.get();
+        }
+        return null;
+    }
     /**
-     * 计算手续费
-     * @param args
      */
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        EnvInstance.setEnv(new EnvBase("39.103.141.174"));
-        if(true){
-            testStatus("13FE5F8D00DE18DCB518CEE19C6F45BD0B51AFBE899486446456AFC18EA5BD78");
-            return;
-        }
-        String priKey="602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc";
-        String contract="0xAB184F88f30b3d537f0D4132c30D7416d6743BdC";
-        String token="0xB2366c7f5201271F9cd25Fef2c8D00eAbc3FcE10";
-        List<Address> addressList=new ArrayList<>();
-        List<String> addressListStr=new ArrayList<>();
-        List<Uint256> valueList=new ArrayList<>();
-        List<BigInteger> valueListBig=new ArrayList<>();
-        addressList.add(new Address("0x8a63a7A7ab08D8Be78a428ca52b00D9a7bc76340"));
-        addressListStr.add("0x8a63a7A7ab08D8Be78a428ca52b00D9a7bc76340");
-        valueList.add(new Uint256(BigInteger.TEN.pow(18).multiply(new BigInteger("1"))));
-        valueListBig.add(BigInteger.TEN.pow(18).multiply(new BigInteger("1")));
-       TransactionFace.transactionBatch(priKey,addressList,valueList,contract,token);
-/*
-        RedPackFace.approve(token,contract,priKey,new BigInteger("100000000000000000000"));
+        EnvInstance.setEnv(new EnvBase("8.142.76.237"));
+        Transaction transaction=getTransaction("这里填hash");
+        if(transaction!=null){
+            String input=transaction.getInput();
+            String data = input.substring(0, 9);
+            data = data + input.substring(17, input.length());
+            org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function("transfer", Arrays.asList(), Arrays.asList(new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
+            List<Type> params = FunctionReturnDecoder.decode(data, function.getOutputParameters());
 
-        Credentials credentials=Credentials.create(priKey);
-        Web3j web3j= EnvInstance.getEnv().getWeb3j();
-        PubTokenSol pubTokenSol=PubTokenSol.load(contract,web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(), BaseMsg.GAS_LIMIT.toBigInteger());
-        String hash=pubTokenSol.transferTokens(token,addressListStr,valueListBig,new BigInteger("5000000000")).sendAsync().get().getTransactionHash();
-        System.out.println(JSON.toJSONString(BaseFace.dealMsg(hash)));*/
+            String fromAddress=AccountFace.hexToAddress(transaction.getFrom()); //发送方
+            String toAddress = AccountFace.hexToAddress(params.get(0).getValue().toString()); //接收方
+            String amount = params.get(1).getValue().toString(); //数量 要除以10的18次方
+        }
     }
 
 

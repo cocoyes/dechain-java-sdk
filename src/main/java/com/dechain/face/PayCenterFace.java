@@ -1,5 +1,6 @@
 package com.dechain.face;
 
+import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.BaseMsg;
@@ -80,9 +81,9 @@ public class PayCenterFace {
      * @param payContract 支付平台合约
      * @return
      */
-    public static String payOrder(String oid,String prikey,String payContract){
+    public static BaseMsg payOrder(String oid,String prikey,String payContract){
         List<Type> params= Arrays.asList(new Utf8String(oid));
-        return TransactionFace.callContractFunctionOp(prikey,payContract,params,"payOrder",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger());
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,payContract,params,"payOrder",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
 
@@ -92,9 +93,9 @@ public class PayCenterFace {
      * @param payContract 支付平台合约
      * @return
      */
-    public static String cancelOrder(String oid,String prikey,String payContract){
+    public static BaseMsg cancelOrder(String oid,String prikey,String payContract){
         List<Type> params= Arrays.asList(new Utf8String(oid));
-        return TransactionFace.callContractFunctionOp(prikey,payContract,params,"cancelOrder",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger());
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,payContract,params,"cancelOrder",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
     /**
@@ -104,9 +105,9 @@ public class PayCenterFace {
      * @param payContract 支付平台合约
      * @return
      */
-    public static String withdrawFromBalance(BigInteger amount,String toAddress,String prikey,String payContract){
+    public static BaseMsg withdrawFromBalance(BigInteger amount,String toAddress,String prikey,String payContract){
         List<Type> params= Arrays.asList(new Uint256(amount),new Utf8String(toAddress));
-        return TransactionFace.callContractFunctionOp(prikey,payContract,params,"withdrawFromBalance",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger());
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,payContract,params,"withdrawFromBalance",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
 
@@ -115,9 +116,9 @@ public class PayCenterFace {
      * @param payContract 支付平台合约
      * @return
      */
-    public static String quitBusiness(String prikey,String payContract){
+    public static BaseMsg quitBusiness(String prikey,String payContract){
         List<Type> params= new ArrayList<>();
-        return TransactionFace.callContractFunctionOp(prikey,payContract,params,"quitBusiness",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger());
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(prikey,payContract,params,"quitBusiness",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
 
@@ -143,7 +144,7 @@ public class PayCenterFace {
 
 
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"findBusiness",list,outputParams);
-        if (types!=null&&types.size()==5){
+        if (types!=null&&types.size()==10){
             /**
              0: address: ow 0x3901952De2f16ad9B8646CF59C337d0b445A81Ca
              1: string: icon https://avatar.csdnimg.cn/6/F/5/0_qq_31708101.jpg
@@ -200,7 +201,7 @@ public class PayCenterFace {
         outputParams.add(new TypeReference<Address>() {});
 
         List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"findOrder",list,outputParams);
-        if (types!=null&&types.size()==5){
+        if (types!=null&&types.size()==7){
             /**
              * 0: string: oid
              * 1: uint256: amount 300000000000000000000
@@ -218,7 +219,7 @@ public class PayCenterFace {
             Address business=(Address)types.get(6);
 
 
-            orderInfo.setOid(oid.getValue());
+            orderInfo.setOid(orderId);
             orderInfo.setAmount(amount.getValue());
             orderInfo.setStatus(status.getValue());
             orderInfo.setPayUser(payUser.getValue());
@@ -425,9 +426,11 @@ public class PayCenterFace {
 
 
     public static void main(String[] args) {
-        EnvInstance.setEnv(new EnvBase("123.100.236.38"));
+        EnvInstance.setEnv(new EnvBase("8.142.76.237"));
         Web3j web3j=EnvInstance.getEnv().getWeb3j();
-        System.out.println(payOrder("0001","602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc","0x731bbb4155b8cf9b96ddcdfd5aa3bb806cc8dbac"));
+        //System.out.println(payOrder("0001","602d17e7a1bf0e1fb6b9c43ffff1908fb8dc82a3e454d3b7df627b963e8e25fc","0x731bbb4155b8cf9b96ddcdfd5aa3bb806cc8dbac"));
+        System.out.println(JSON.toJSONString(PayCenterFace.findOrder("1001","0x13D725b5E4e243a32764aFa7A8D4286c4dB3583c")));
+        System.out.println(JSON.toJSONString(PayCenterFace.findBusiness("0xb3aef17adbc10deb58148f67281eca6caba4a311","0x13D725b5E4e243a32764aFa7A8D4286c4dB3583c")));
     }
 
 
