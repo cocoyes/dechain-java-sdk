@@ -9,10 +9,7 @@ import com.dechain.msg.coin.BaseMsg;
 import com.dechain.utils.PubTokenSol;
 import com.dechain.utils.crypto.Crypto;
 import org.apache.commons.lang3.StringUtils;
-import org.web3j.abi.EventEncoder;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeReference;
+import org.web3j.abi.*;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
@@ -27,6 +24,8 @@ import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -327,7 +326,7 @@ public class TransactionFace {
                     .get();
             BigInteger nonce = ethGetTransactionCount.getTransactionCount();
             //BigInteger gasPrice = ethService.getGasPrice();
-            BigInteger gasPrice=getCommonGasPrice();
+            BigInteger gasPrice=BigInteger.ZERO;
             BigInteger value = new BigInteger(amount);
             Function fn = new Function("transfer", Arrays.asList(new Address(toAddress), new Uint256(value)), Collections.<TypeReference<?>>emptyList());
             String data = FunctionEncoder.encode(fn);
@@ -472,8 +471,9 @@ public class TransactionFace {
     /**
      */
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        EnvInstance.setEnv(new EnvBase("8.142.76.237"));
-        Transaction transaction=getTransaction("这里填hash");
+        EnvInstance.setEnv(new EnvBase("192.168.6.38"));
+        //sendErc20();
+       /* Transaction transaction=getTransaction("这里填hash");
         if(transaction!=null){
             String input=transaction.getInput();
             String data = input.substring(0, 9);
@@ -486,7 +486,22 @@ public class TransactionFace {
             String fromAddress=AccountFace.hexToAddress(transaction.getFrom()); //发送方
             String toAddress = AccountFace.hexToAddress(params.get(0).getValue().toString()); //接收方
             String amount = params.get(1).getValue().toString(); //数量 要除以10的18次方
-        }
+        }*/
+       /* try {
+            decodeInput();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }*/
+
+       // TransactionFace.sendCommonTrans("6e8e06bc5e83d82e90c63370fcf741b0a40e48f31a5789b698002e99a0b512e8","","");
+
+        BaseMsg baseMsg=TransactionFace.sendContractTransAndGet("6e8e06bc5e83d82e90c63370fcf741b0a40e48f31a5789b698002e99a0b512e8",
+                "0xD952ab757fBB649053AE70b7056eE78a757c4Ca8","10000000000000000000","0x22736600306D03dAe8542058E67fBC8418f24290");
+        System.out.println(JSON.toJSONString(baseMsg));
     }
 
 
@@ -501,6 +516,28 @@ public class TransactionFace {
     }
 
 
+    private static void sendErc20(){
+        System.out.println(sendContractTransAndGet("551ab8527bc625e607b5ca58aa9aeb3b617d2f297d512b322ecc042d21a3d5c6","0xaED255425d58ADbd7f0dFcE809943eA5F4DcE432",new BigInteger("500").multiply(BigInteger.TEN.pow(18))+"",AccountFace.addressToHex("de18wryxwsvh9yfpn4m087mze8n4s7dl0kjepxhm2")));
+    }
+
+
+
+
+    public static void decodeInput() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        String inputData = "0xa9059cbb00000000000000000000000035f5992e40facfcad742fcfcc1d94ee0581e9cb100000000000000000000000000000000000000000000003635c9adc5dea00000";
+        String method = inputData.substring(0, 10);
+        System.out.println(method);
+        String to = inputData.substring(10, 74);
+        String value = inputData.substring(74);
+        Method refMethod = TypeDecoder.class.getDeclaredMethod("decode", String.class, int.class, Class.class);
+        refMethod.setAccessible(true);
+        Address address = (Address) refMethod.invoke(null, to, 0, Address.class);
+        System.out.println(address.toString());
+        Uint256 amount = (Uint256) refMethod.invoke(null, value, 0, Uint256.class);
+        System.out.println(amount.getValue());
+
+
+    }
 
 
 

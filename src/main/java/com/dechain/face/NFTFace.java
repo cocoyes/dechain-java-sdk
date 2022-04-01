@@ -31,10 +31,10 @@ public class NFTFace {
         if (types!=null&&types.size()==1){
             Array hunterInfos= (Array)types.get(0);
             List<Address> ads=hunterInfos.getValue();
-            ads.forEach(address -> {
+            for(Address address:ads){
                 NFTMarketItem tokenInfo= getNFTCMarketDetail(registerContract,address.getValue());
                 nftMarketItems.add(tokenInfo);
-            });
+            }
         }
         return nftMarketItems;
     }

@@ -164,16 +164,22 @@ public class AccountFace {
 
 
     public static void main(String[] args) {
-       // EnvInstance.setEnv(new EnvBase("39.103.141.174"));
-        //System.out.print(AccountFace.getMainCoinBalance("de1dhf9c4zmdxdnx9m2nq3mkattvqjkwe3mxerxpk"));
+       EnvInstance.setEnv(new EnvBase("192.168.6.38"));
+        System.out.print(AccountFace.getMainCoinBalance("0x560D67A22EC010198a26Fa282627bdDBb7d3F804"));
 
         //String pri=Crypto.generatePrivateKeyFromMnemonic("dignity place clip make relief dice lumber win copper profit voice render");
       //  System.out.println(pri);
 
+        System.out.println(
+                AccountFace.
+                        importByMnemonic("goose disorder render point stomach prosper pipe because hollow soon mean solve seed tribe captain bicycle jewel eye analyst super original miracle sudden depart"));
 
-        System.out.println(AccountFace.importByMnemonic("dignity place clip make relief dice lumber win copper profit voice render"));
-
-       System.out.println(AccountFace.hexToAddress("0xe14D2E1aE83801A6f1A8B865b9188a0285dfa51c"));
+        //System.out.println(AccountFace.importByPrivateKey("464ce138ce94e427bbfa3095c30944637b7ca9e64b4068fbb7ce849534b48206"));
+/*
+       System.out.println(AccountFace.addressToHex("de187zp7twev0cxfks4s3sv9r6sh97tyxtus64n3n"));
+        System.out.println(AccountFace.addressToHex("de1rp5spkc9evu4v35w9fqhc5qzrntmnrwn492aqy"));
+        System.out.println(AccountFace.importByMnemonic("dignity place clip make relief dice lumber win copper profit voice render"));*/
+       //System.out.println(AccountFace.hexToAddress("0xe14D2E1aE83801A6f1A8B865b9188a0285dfa51c"));
     }
 
 }

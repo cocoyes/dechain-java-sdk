@@ -133,11 +133,10 @@ public class CoinFace {
         if (types!=null&&types.size()==1){
             Array hunterInfos= (Array)types.get(0);
             List<Address> ads=hunterInfos.getValue();
-            ads.forEach(address -> {
+            for(Address address:ads){
                 TokenInfo tokenInfo= getTokenDetail(contract,address.getValue());
                 tokenInfos.add(tokenInfo);
-            });
-
+            }
         }
         return tokenInfos;
     }

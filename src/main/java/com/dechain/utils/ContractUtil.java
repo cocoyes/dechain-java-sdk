@@ -36,6 +36,23 @@ public class ContractUtil {
     }
 
 
+
+    public static GoodsSol createGoods(String priKey,String master,String payCoin,BigInteger num,BigInteger price){
+        Web3j web3j= EnvInstance.getEnv().getWeb3j();
+        Credentials credentials=Credentials.create(priKey);
+        try {
+            GoodsSol token=
+                    GoodsSol.
+                            deploy(web3j,credentials, BaseMsg.GAS_PRICE.toBigInteger(),
+                                    BaseMsg.GAS_LIMIT.toBigInteger(),master,payCoin,num,price).send();
+
+            return token;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 创建红包合约
      * @param priKey
