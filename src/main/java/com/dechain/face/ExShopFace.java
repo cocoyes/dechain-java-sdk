@@ -42,7 +42,7 @@ public class ExShopFace {
     }
 
     public static BaseMsg changeNumAndPrice(String priKey, String goods,BigInteger num,BigInteger price){
-        List<Type> params= Arrays.asList(new Address(goods),new Uint256(num),new Uint256(price));
+        List<Type> params= Arrays.asList(new Uint256(num),new Uint256(price));
         return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,goods,params,"changeNumAndPrice",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
