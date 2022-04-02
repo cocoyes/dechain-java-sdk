@@ -41,6 +41,11 @@ public class ExShopFace {
         return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,master,params,"opOrder",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
     }
 
+    public static BaseMsg changeNumAndPrice(String priKey, String goods,BigInteger num,BigInteger price){
+        List<Type> params= Arrays.asList(new Address(goods),new Uint256(num),new Uint256(price));
+        return BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,goods,params,"changeNumAndPrice",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
+    }
+
     //提取锁死订单的保证金
     public static BaseMsg widForceLockOrder(String priKey, String master,String goods,String orderId,String to){
         List<Type> params= Arrays.asList(new Address(goods),new Utf8String(orderId),new Address(to));
