@@ -21,10 +21,10 @@ import static com.dechain.msg.coin.BaseMsg.GAS_PRICE;
 public class ExShopFace {
 
     //注册商品合约
-    public static BaseMsg callRegister(String priKey, String master,String coin,BigInteger num,BigInteger price){
+    public static BaseMsg callRegister(String priKey,String id, String master,String coin,BigInteger num,BigInteger price){
         GoodsSol goods=ContractUtil.createGoods(priKey,master,coin,num,price);
         if(goods!=null){
-            List<Type> params= Arrays.asList(new Address(goods.getContractAddress()));
+            List<Type> params= Arrays.asList(new Address(goods.getContractAddress()),new Utf8String(id));
             BaseMsg baseMsg=BaseFace.dealMsg(TransactionFace.callContractFunctionOp(priKey,master,params,"callRegister",GAS_LIMIT.toBigInteger(),GAS_PRICE.toBigInteger()));
             if(baseMsg.isSuccess()){
                 baseMsg.setData(goods.getContractAddress());

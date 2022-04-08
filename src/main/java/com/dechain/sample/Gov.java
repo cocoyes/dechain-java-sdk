@@ -1,6 +1,7 @@
 package com.dechain.sample;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dechain.utils.QrCodeRouter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;

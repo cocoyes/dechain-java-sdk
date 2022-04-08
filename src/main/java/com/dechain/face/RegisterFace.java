@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.dechain.env.EnvBase;
 import com.dechain.env.EnvInstance;
 import com.dechain.msg.coin.BaseMsg;
+import com.dechain.msg.coin.PayOrderInfo;
 import com.dechain.utils.HttpUtils;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
@@ -98,6 +99,45 @@ public class RegisterFace {
         return BigInteger.ZERO;
     }
 
+
+    public static PayOrderInfo getOrderInfoMap(String appId,String contract,String orderId){
+        List<Type> list=new ArrayList<>();
+        List<TypeReference<?>> outputParams=new ArrayList<>();
+        outputParams.add(new TypeReference<Utf8String>() {});
+        outputParams.add(new TypeReference<Utf8String>() {});
+        outputParams.add(new TypeReference<Address>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Uint256>() {});
+        outputParams.add(new TypeReference<Address>() {});
+        outputParams.add(new TypeReference<Bool>() {});
+        list.add(new Utf8String(appId));
+        list.add(new Utf8String(orderId));
+        List<Type>  types=TransactionFace.callContractViewMethod("0x3901952De2f16ad9B8646CF59C337d0b445A81Ca",contract,"orderInfoMap",list,outputParams);
+        if (types!=null&&types.size()==7){
+            /**
+             * 0: uint256: remaining  50000000000000000000
+             */
+            Utf8String aId= (Utf8String)types.get(0);
+            Utf8String oId= (Utf8String)types.get(1);
+            Address token= (Address)types.get(2);
+            Uint256 amount= (Uint256)types.get(3);
+            Uint256 status= (Uint256)types.get(4);
+            Address user= (Address)types.get(5);
+            Bool used= (Bool)types.get(6);
+            PayOrderInfo payOrderInfo=new PayOrderInfo();
+            payOrderInfo.setAmount(amount.getValue());
+            payOrderInfo.setAppId(aId.getValue());
+            payOrderInfo.setoId(oId.getValue());
+            payOrderInfo.setStatus(status.getValue());
+            payOrderInfo.setUsed(used.getValue());
+            payOrderInfo.setToken(token.getValue());
+            payOrderInfo.setUser(user.getValue());
+            return payOrderInfo;
+        }
+        return null;
+    }
+
+
     public static BaseMsg approve(String contractFrom, String contractTo, String priKey, BigInteger approveAmount){
         approveAmount=approveAmount.multiply(BigInteger.TEN.pow(10));
         List<Type> params= Arrays.asList(new Address(contractTo),new Uint256(approveAmount));
@@ -141,7 +181,7 @@ public class RegisterFace {
         String oid="P1481452573512179715"; //订单号要变更
         //BaseMsg baseMsg=payOrder(priKey,contract,appId,token,amount,oid);
 
-        System.out.println(getAppBalance("61ca7b3893d8ef64c15e9dbd","0xfCbBC816B4785B40f072765ebe0d71610eDe7Ef1","0x054FE3f044bdd56801D51A78e9B069d07c83b657"));
+        System.out.println(getOrderInfoMap("61ca7b3893d8ef64c15e9dbd","0x7081353f20E15C54badfFA918c1ac70bd69Df4C2","P1512028229179125762"));
     }
 
 
